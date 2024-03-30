@@ -1,5 +1,5 @@
 
-import { MessageTab } from '../features/MessageTab';
+import { MessageTab } from '../features/chat/MessageTab';
 @Entry
 @Component
 struct HomePage {

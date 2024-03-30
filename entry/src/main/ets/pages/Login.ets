@@ -1,10 +1,13 @@
 import router from '@ohos.router';
+import { IUser } from '../common/types/User.type';
+import { mockUser_gamejoye } from '../mock/mockUsers';
 
 @Entry
 @Component
 struct Login {
 
   handleOnLogin = () => {
+    AppStorage.SetOrCreate<IUser>('user', mockUser_gamejoye);
     router.replaceUrl({
       url: 'pages/HomePage'
     }, (err) => {

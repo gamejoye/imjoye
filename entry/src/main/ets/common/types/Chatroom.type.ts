@@ -1,4 +1,4 @@
-export interface IChatRoom {
+export interface IChatroom {
   id: number;
   type: 'SINGLE' | 'MULTIPLE';
   name: string;
