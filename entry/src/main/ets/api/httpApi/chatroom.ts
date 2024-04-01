@@ -8,7 +8,8 @@ export async function fetchChatroomSummaries(
     params: FetchChatroomSummaryParams
 ): Promise<IChatChannelState[]> {
   const httpRequest = http.createHttp();
-  const response = await httpRequest.request('http://192.168.123.205:8080/chatrooms/summaries', {
+  const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
+  const response = await httpRequest.request(apiUrl.get() + 'chatrooms/summaries', {
     method: http.RequestMethod.POST,
     header: {
       'Content-Type': 'application/json',
