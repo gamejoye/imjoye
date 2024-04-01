@@ -4,7 +4,7 @@ import { IChatChannelState } from './ChatChannel';
 import { fetchChatroomSummaries } from '../../api/httpApi/chatroom';
 
 @Component
-export struct MessageTab {
+export struct ChatChannelTab {
   @StorageLink('user') user: IUser = null;
   @State chatChannels: IChatChannelState[] = [];
 
@@ -36,8 +36,8 @@ export struct MessageTab {
       Row() {
         Row({ space: 6 }) {
           Image(this.user.avatarUrl)
-            .height(60)
-            .width(60)
+            .height(48)
+            .width(48)
             .borderRadius(50)
           this.UserStatusBuilder('online', this.user)
         }

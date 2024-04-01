@@ -1,10 +1,19 @@
-
 import { pickChatroomName } from '../../common/utils/pickChatRoomName';
-import { IChatChannelState } from './ChatChannel';
+import { IChatChannelState } from './ChatChannel'
+import router from '@ohos.router';
 
 @Component
 export struct ChatChannelList {
   @Link chatChannelList: IChatChannelState[];
+
+  handleOnJumpChatRoom(chatChannel: IChatChannelState) {
+    router.pushUrl({
+      url: 'pages/ChatWindow',
+      params: {
+        chatChannel
+      }
+    })
+  }
 
   build() {
     Column() {
@@ -13,8 +22,8 @@ export struct ChatChannelList {
           ListItem() {
             Row({ space: 6 }) {
               Image($r('app.media.logo'))
-                .width(60)
-                .height(60)
+                .width(48)
+                .height(48)
                 .borderRadius(50)
 
               Column() {
@@ -31,6 +40,7 @@ export struct ChatChannelList {
             .height(72)
             .padding({ left: '5%', right: '5%' })
             .backgroundColor('#FFFFFF')
+            .onClick(() => this.handleOnJumpChatRoom(chatChannel))
           }
         }, (chatChannel: IChatChannelState) => chatChannel.chatroom.id + '')
       }

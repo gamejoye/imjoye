@@ -1,5 +1,5 @@
 
-import { MessageTab } from '../features/chat/MessageTab';
+import { ChatChannelTab } from '../features/chat/ChatChannelTab';
 @Entry
 @Component
 struct HomePage {
@@ -26,7 +26,7 @@ struct HomePage {
     Column() {
       Tabs({barPosition: BarPosition.End, controller: this.tabsController}) {
         TabContent() {
-          MessageTab()
+          ChatChannelTab()
         }
         .tabBar(this.TabBuilder('消息', 0, $r('app.media.selected_message'), $r('app.media.message')))
 
