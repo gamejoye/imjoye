@@ -1,5 +1,5 @@
 import http from '@ohos.net.http'
-import { IChatChannelState } from '../../features/chat/ChatChannel'
+import { IChatChannelState } from '../../common/types/ChatChannel.type'
 type FetchChatroomSummaryParams = {
   latestVisitTimes: Array<{ id: number, latestVisitTime: string }>;
 }
