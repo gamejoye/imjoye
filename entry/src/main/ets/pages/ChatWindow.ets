@@ -1,10 +1,19 @@
 import router from '@ohos.router';
+import emitter from '@ohos.events.emitter';
 import { fetchMessages, createMessage } from '../api/httpApi';
 import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
 import { pickChatroomName } from '../common/utils/pickChatRoomName';
-import { IChatChannelState } from '../features/chat/ChatChannel';
+import { IChatChannelState } from '../common/types/ChatChannel.type';
 import { MessageList } from '../features/message/MessageList';
+import { WebSocketEvent } from '../common/constants/websocketEvent';
+
+
+function messageSorter(message1: IMessage, message2: IMessage) {
+  const date1 = new Date(message1.createTime);
+  const date2 = new Date(message2.createTime);
+  return date1.getTime() - date2.getTime();
+}
 
 @Entry
 @Component
@@ -15,13 +24,22 @@ struct ChatWindow {
   private listScroller: Scroller = new Scroller();
   private chatChannel: IChatChannelState = router.getParams()['chatChannel'];
 
+  async aboutToAppear() {
+    emitter.on({
+      eventId: WebSocketEvent.NEW_MESSAGE,
+    }, ({ data }: { data: { plainText: string } }) => {
+      const message: IMessage = JSON.parse(data.plainText);
+      this.messages = [...this.messages, message].sort(messageSorter);
+    })
+  }
+
   async onPageShow() {
     const messages = await fetchMessages({ roomId: this.chatChannel.chatroom.id });
-    this.messages = messages.sort((message1, message2) => {
-      const date1 = new Date(message1.createTime);
-      const date2 = new Date(message2.createTime);
-      return date1.getTime() - date2.getTime();
-    });
+    this.messages = messages.sort(messageSorter);
+  }
+
+  aboutToDisappear() {
+    emitter.off(1);
   }
 
   handleOnBack() {
@@ -36,8 +54,6 @@ struct ChatWindow {
       userId: this.user.id,
       chatroomId: this.chatChannel.chatroom.id,
     })
-    console.log('handleOnMessageSubmit done *******')
-    this.messages = [...this.messages, message];
     this.draft = '';
   }
 
