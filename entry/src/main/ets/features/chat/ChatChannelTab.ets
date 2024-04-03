@@ -1,19 +1,12 @@
-import { ChatChannelList } from './ChatChannelList';
 import { IUser } from '../../common/types/User.type';
-import { IChatChannelState } from './ChatChannel';
-import { fetchChatroomSummaries } from '../../api/httpApi/chatroom';
+import { IChatChannelState } from '../../common/types/ChatChannel.type';
+import { pickChatroomName } from '../../common/utils/pickChatRoomName';
+import router from '@ohos.router';
 
 @Component
 export struct ChatChannelTab {
   @StorageLink('user') user: IUser = null;
-  @State chatChannels: IChatChannelState[] = [];
-
-  async aboutToAppear() {
-    const chatChannels = await fetchChatroomSummaries({
-      latestVisitTimes: [],
-    });
-    this.chatChannels = chatChannels;
-  }
+  @Link chatChannels: IChatChannelState[];
 
   @Builder UserStatusBuilder(status: 'online', user: IUser) {
     Column({ space: 6}) {
@@ -29,6 +22,15 @@ export struct ChatChannelTab {
       .width('100%')
       .height('50%')
     }
+  }
+
+  handleOnJumpChatRoom(chatChannel: IChatChannelState) {
+    router.pushUrl({
+      url: 'pages/ChatWindow',
+      params: {
+        chatChannel
+      }
+    })
   }
 
   build() {
@@ -56,9 +58,44 @@ export struct ChatChannelTab {
       .width('100%')
       .padding({ left: '5%', right: '5%', top: 6, bottom: 6})
 
-      ChatChannelList({ chatChannelList: $chatChannels })
-        .height('92%')
-        .width('100%')
+      Column() {
+        List() {
+          ForEach(this.chatChannels, (chatChannel: IChatChannelState) => {
+            ListItem() {
+              Row({ space: 6 }) {
+                Badge({
+                  count: chatChannel.unreadMessageCount,
+                  position: BadgePosition.RightTop,
+                  style: { badgeSize: 16, badgeColor: '#FA2A2D' }
+                }) {
+                  Image($r('app.media.logo'))
+                    .width(48)
+                    .height(48)
+                    .borderRadius(50)
+                }
+
+                Column() {
+                  Text(pickChatroomName(chatChannel.chatroom))
+                    .width('100%')
+                    .height('50%')
+                    .fontSize(24)
+                  Text(chatChannel.latestMessage?.content ?? '')
+                    .width('100%')
+                    .height('50%')
+                    .fontSize(16)
+                }.padding({ top: 10, bottom: 10 })
+              }
+              .height(72)
+              .padding({ left: '5%', right: '5%' })
+              .backgroundColor('#FFFFFF')
+              .onClick(() => this.handleOnJumpChatRoom(chatChannel))
+            }
+          }, (chatChannel: IChatChannelState) => chatChannel.chatroom.id + '_' + (chatChannel.latestMessage?.id ?? ''))
+        }
+        .height('100%')
+        .width("100%")
+        .backgroundColor('#F1F3F5')
+      }
     }
     .width('100%')
     .height('100%')
