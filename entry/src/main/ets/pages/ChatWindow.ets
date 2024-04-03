@@ -4,7 +4,7 @@ import { fetchMessages, createMessage } from '../api/httpApi';
 import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
 import { pickChatroomName } from '../common/utils/pickChatRoomName';
-import { IChatChannelState } from '../common/types/ChatChannel.type';
+import { IChatChannel } from '../common/types/ChatChannel.type';
 import { MessageList } from '../features/message/MessageList';
 import { WebSocketEvent } from '../common/constants/websocketEvent';
 
@@ -22,7 +22,7 @@ struct ChatWindow {
   @State draft: string = '';
   @StorageLink('user') user: IUser = null;
   private listScroller: Scroller = new Scroller();
-  private chatChannel: IChatChannelState = router.getParams()['chatChannel'];
+  private chatChannel: IChatChannel = router.getParams()['chatChannel'];
 
   async aboutToAppear() {
     emitter.on({
@@ -57,7 +57,7 @@ struct ChatWindow {
     this.draft = '';
   }
 
-  @Builder ChatroomStatusBuild(chatChannel: IChatChannelState) {
+  @Builder ChatroomStatusBuild(chatChannel: IChatChannel) {
     Flex({
       direction: FlexDirection.Column
     }) {

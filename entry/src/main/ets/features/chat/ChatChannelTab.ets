@@ -1,12 +1,12 @@
 import { IUser } from '../../common/types/User.type';
-import { IChatChannelState } from '../../common/types/ChatChannel.type';
+import { IChatChannel } from '../../common/types/ChatChannel.type';
 import { pickChatroomName } from '../../common/utils/pickChatRoomName';
 import router from '@ohos.router';
 
 @Component
 export struct ChatChannelTab {
   @StorageLink('user') user: IUser = null;
-  @Link chatChannels: IChatChannelState[];
+  @Link chatChannels: IChatChannel[];
 
   @Builder UserStatusBuilder(status: 'online', user: IUser) {
     Column({ space: 6}) {
@@ -24,7 +24,7 @@ export struct ChatChannelTab {
     }
   }
 
-  handleOnJumpChatRoom(chatChannel: IChatChannelState) {
+  handleOnJumpChatRoom(chatChannel: IChatChannel) {
     router.pushUrl({
       url: 'pages/ChatWindow',
       params: {
@@ -60,7 +60,7 @@ export struct ChatChannelTab {
 
       Column() {
         List() {
-          ForEach(this.chatChannels, (chatChannel: IChatChannelState) => {
+          ForEach(this.chatChannels, (chatChannel: IChatChannel) => {
             ListItem() {
               Row({ space: 6 }) {
                 Badge({
@@ -90,7 +90,7 @@ export struct ChatChannelTab {
               .backgroundColor('#FFFFFF')
               .onClick(() => this.handleOnJumpChatRoom(chatChannel))
             }
-          }, (chatChannel: IChatChannelState) => chatChannel.chatroom.id + '_' + (chatChannel.latestMessage?.id ?? ''))
+          }, (chatChannel: IChatChannel) => chatChannel.chatroom.id + '_' + (chatChannel.latestMessage?.id ?? ''))
         }
         .height('100%')
         .width("100%")

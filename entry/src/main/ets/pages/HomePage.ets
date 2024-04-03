@@ -1,11 +1,11 @@
 import emitter from '@ohos.events.emitter';
 import { fetchChatroomSummaries } from '../api/httpApi/chatroom';
 import { WebSocketEvent } from '../common/constants/websocketEvent';
-import { IChatChannelState } from '../common/types/ChatChannel.type';
+import { IChatChannel } from '../common/types/ChatChannel.type';
 import { IMessage } from '../common/types/Message.type';
 import { ChatChannelTab } from '../features/chat/ChatChannelTab';
 
-function chatChannelStateSorter(state1: IChatChannelState, state2: IChatChannelState) {
+function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
   const date2 = new Date(state2.latestMessage.createTime);
   return date2.getTime() - date1.getTime();
@@ -15,7 +15,7 @@ function chatChannelStateSorter(state1: IChatChannelState, state2: IChatChannelS
 @Component
 struct HomePage {
   @State currentIndex: number = 0;
-  @State chatChannels: IChatChannelState[] = [];    // TODO 从本地磁盘获取上次存的chatChannels.state
+  @State chatChannels: IChatChannel[] = [];    // TODO 从本地磁盘获取上次存的chatChannels.state
   private tabsController : TabsController = new TabsController();
   @State allUnreadMessageCount: number = this.chatChannels
     .map(state => state.unreadMessageCount)

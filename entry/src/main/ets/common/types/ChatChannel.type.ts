@@ -1,7 +1,7 @@
 import { IChatroom } from './Chatroom.type';
 import { IMessage } from './Message.type';
 
-export interface IChatChannelState {
+export interface IChatChannel {
   latestMessage: IMessage | null;
   latestVisitTime: string;
   unreadMessageCount: number;
