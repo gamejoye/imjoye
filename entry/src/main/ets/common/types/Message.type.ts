@@ -3,7 +3,7 @@ import { IUser } from './User.type';
 
 export interface IMessage {
   id: number;
-  room: IChatroom;
+  chatroom: IChatroom;
   from: IUser;
   content: string;
   createTime: string;
