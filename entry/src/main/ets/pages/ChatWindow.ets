@@ -6,7 +6,9 @@ import { IUser } from '../common/types/User.type';
 import { pickChatroomName } from '../common/utils/pickChatRoomName';
 import { IChatChannel } from '../common/types/ChatChannel.type';
 import { MessageList } from '../features/message/MessageList';
-import { WebSocketEvent } from '../common/constants/websocketEvent';
+import { clientChatroomService } from '../common/database/rdb/services';
+import { getCurrentDatetime } from '../common/utils/datetime';
+import { EmitterEvent } from '../common/constants/emitterEvent';
 
 
 function messageSorter(message1: IMessage, message2: IMessage) {
@@ -26,7 +28,7 @@ struct ChatWindow {
 
   async aboutToAppear() {
     emitter.on({
-      eventId: WebSocketEvent.NEW_MESSAGE,
+      eventId: EmitterEvent.NEW_MESSAGE,
     }, ({ data }: { data: { plainText: string } }) => {
       const message: IMessage = JSON.parse(data.plainText);
       this.messages = [...this.messages, message].sort(messageSorter);
@@ -39,7 +41,8 @@ struct ChatWindow {
   }
 
   aboutToDisappear() {
-    emitter.off(WebSocketEvent.NEW_MESSAGE);
+    emitter.off(EmitterEvent.NEW_MESSAGE);
+    clientChatroomService.updateLatestVisitTime(this.chatChannel.chatroom, getCurrentDatetime())
   }
 
   handleOnBack() {
@@ -49,7 +52,7 @@ struct ChatWindow {
   }
 
   async handleOnMessageSubmit() {
-    const message = await createMessage({
+    await createMessage({
       content: this.draft,
       userId: this.user.id,
       chatroomId: this.chatChannel.chatroom.id,

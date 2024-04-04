@@ -1,9 +1,12 @@
 import emitter from '@ohos.events.emitter';
 import { fetchChatroomSummaries } from '../api/httpApi/chatroom';
-import { WebSocketEvent } from '../common/constants/websocketEvent';
 import { IChatChannel } from '../common/types/ChatChannel.type';
 import { IMessage } from '../common/types/Message.type';
 import { ChatChannelTab } from '../features/chat/ChatChannelTab';
+import { clientChatroomService } from '../common/database/rdb/services';
+import { EmitterEvent } from '../common/constants/emitterEvent';
+import { Adapter, ClientChatroomAdapter } from '../common/utils/adapter';
+import { ClientChatroom } from '../common/views/ClientChatroom';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
@@ -23,7 +26,7 @@ struct HomePage {
 
   async aboutToAppear() {
     emitter.on({
-      eventId: WebSocketEvent.NEW_MESSAGE,
+      eventId: EmitterEvent.NEW_MESSAGE,
     }, ({ data }: { data: { plainText: string } }) => {
       const message: IMessage = JSON.parse(data.plainText);
       this.chatChannels = this.chatChannels.map(
@@ -37,18 +40,40 @@ struct HomePage {
         }
       ).sort(chatChannelStateSorter);
     })
+
+    emitter.on({
+      eventId: EmitterEvent.CLIENT_CHATROOM_UPDATE,
+    }, ({ data }) => {
+      this.loadChatChannels();
+    })
   }
 
-  async onPageShow() {
-    const chatChannels = await fetchChatroomSummaries({
-      latestVisitTimes: [],
-    });
-    this.chatChannels = chatChannels.sort(chatChannelStateSorter);
+  onPageShow() {
+    this.loadChatChannels();
   }
 
   aboutToDisappear() {
-    emitter.off(WebSocketEvent.NEW_MESSAGE);
-    // TODO 将chatChannels.state 存在本地磁盘
+    emitter.off(EmitterEvent.NEW_MESSAGE);
+    clientChatroomService.storeAll(
+      this.chatChannels.map(
+        (chatChannel) => Adapter
+          .from<IChatChannel>(chatChannel)
+          .to<IChatChannel, ClientChatroom>((chatChannel) => new ClientChatroomAdapter(chatChannel).adapt())
+      )
+    );
+  }
+
+  async loadChatChannels() {
+    const latestVisitTimes = (await clientChatroomService.getAll()).map(clientRoom => {
+      return {
+        id: clientRoom.id,
+        latestVisitTime: clientRoom.latestVisitTime,
+      }
+    });
+    const chatChannels = await fetchChatroomSummaries({
+      latestVisitTimes,
+    });
+    this.chatChannels = chatChannels.sort(chatChannelStateSorter);
   }
 
   @Builder TabBuilder(title: string, targetIndex: number, selectedImg: Resource, normalImg: Resource, badgeCount: number) {
