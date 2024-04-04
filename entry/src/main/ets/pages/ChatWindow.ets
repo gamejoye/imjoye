@@ -39,7 +39,7 @@ struct ChatWindow {
   }
 
   aboutToDisappear() {
-    emitter.off(1);
+    emitter.off(WebSocketEvent.NEW_MESSAGE);
   }
 
   handleOnBack() {
