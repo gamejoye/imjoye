@@ -33,6 +33,10 @@ export struct ChatChannelTab {
     })
   }
 
+  chatChannelListKeyGenerator(chatChannel: IChatChannel) {
+    return chatChannel.chatroom.id + '_' + (chatChannel.latestMessage?.id ?? '') + '_' + chatChannel.unreadMessageCount;
+  }
+
   build() {
     Column() {
       Row() {
@@ -90,7 +94,7 @@ export struct ChatChannelTab {
               .backgroundColor('#FFFFFF')
               .onClick(() => this.handleOnJumpChatRoom(chatChannel))
             }
-          }, (chatChannel: IChatChannel) => chatChannel.chatroom.id + '_' + (chatChannel.latestMessage?.id ?? ''))
+          }, (chatChannel: IChatChannel) => this.chatChannelListKeyGenerator(chatChannel))
         }
         .height('100%')
         .width("100%")
