@@ -12,13 +12,13 @@ export default class EntryAbility extends UIAbility {
     /**
      * TODO 环境变量初始化
      */
-    Environment.EnvProp('apiUrl', 'http://192.168.43.71:8080/');
-    Environment.EnvProp('webSocketUrl', 'ws://192.168.43.71:5173/');
+    Environment.EnvProp('apiUrl', 'http://192.168.0.106:8080/');
+    Environment.EnvProp('webSocketUrl', 'ws://192.168.0.106:5173/');
 
     /**
      * 本地数据库初始化
      */
-
+    RdbHelper.initRdb(this.context);
 
     this.webSocketService = new WebSocketService();
     this.webSocketService.start();
