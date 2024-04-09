@@ -1,0 +1,1 @@
+export const CLIENT_CHATROOM = 'client_chatroom';
