@@ -1,12 +1,12 @@
 import http from '@ohos.net.http'
-import { IChatChannelState } from '../../common/types/ChatChannel.type'
+import { IChatChannel } from '../../common/types/ChatChannel.type'
 type FetchChatroomSummaryParams = {
   latestVisitTimes: Array<{ id: number, latestVisitTime: string }>;
 }
 
 export async function fetchChatroomSummaries(
     params: FetchChatroomSummaryParams
-): Promise<IChatChannelState[]> {
+): Promise<IChatChannel[]> {
   const httpRequest = http.createHttp();
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
   const response = await httpRequest.request(apiUrl.get() + 'chatrooms/summaries', {
