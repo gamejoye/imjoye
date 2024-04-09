@@ -20,6 +20,8 @@
 
 后端代码位于 [nestjs-chat](https://github.com/gamejoye/nestjs-imjoye)，**请确保你在运行本项目之前正确启动了nestjs-chat项目**
 
+~~后端项目的配置过程将在不久后提供~~
+
 #### 环境要求
 
 - HarmonyOS 3.1 Release Api9(移动端)
