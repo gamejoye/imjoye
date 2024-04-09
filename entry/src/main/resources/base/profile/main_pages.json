@@ -2,6 +2,7 @@
   "src": [
     "pages/Login",
     "pages/Register",
-    "pages/HomePage"
+    "pages/HomePage",
+    "pages/ChatWindow"
   ]
 }
