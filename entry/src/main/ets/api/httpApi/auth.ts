@@ -27,3 +27,25 @@ export async function login(
   });
   return JSON.parse(response.result as string);
 }
+
+type RegisterRequestBody = {
+  username: string;
+  email: string;
+  password: string;
+  avatarUrl: string;
+}
+
+export async function register(
+  body: RegisterRequestBody
+): Promise<IResponse<void>> {
+  const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
+  const response = await HttpHelper.request(apiUrl.get() + 'auth/register', {
+    method: http.RequestMethod.POST,
+    header: {
+      'Content-Type': 'application/json',
+      expectDataType: http.HttpDataType.STRING,
+    },
+    extraData: body
+  });
+  return JSON.parse(response.result as string);
+}
