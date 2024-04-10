@@ -7,6 +7,8 @@ import { clientChatroomService } from '../common/database/rdb/services';
 import { EmitterEvent } from '../common/constants/emitterEvent';
 import { Adapter, ClientChatroomAdapter } from '../common/utils/adapter';
 import { ClientChatroom } from '../common/views/ClientChatroom';
+import { isSuccess } from '../common/utils/http';
+import promptAction from '@ohos.promptAction';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
@@ -70,10 +72,17 @@ struct HomePage {
         latestVisitTime: clientRoom.latestVisitTime,
       }
     });
-    const chatChannels = await fetchChatroomSummaries({
+    const { statusCode, data: chatChannels, message } = await fetchChatroomSummaries({
       latestVisitTimes,
     });
-    this.chatChannels = chatChannels.sort(chatChannelStateSorter);
+    if(!isSuccess(statusCode)) {
+      promptAction.showToast({
+        message,
+        duration: 1000,
+      })
+    } else {
+      this.chatChannels = chatChannels;
+    }
   }
 
   @Builder TabBuilder(title: string, targetIndex: number, selectedImg: Resource, normalImg: Resource, badgeCount: number) {

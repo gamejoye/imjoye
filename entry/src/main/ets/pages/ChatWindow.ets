@@ -9,6 +9,8 @@ import { MessageList } from '../features/message/MessageList';
 import { clientChatroomService } from '../common/database/rdb/services';
 import { getCurrentDatetime } from '../common/utils/datetime';
 import { EmitterEvent } from '../common/constants/emitterEvent';
+import { isSuccess } from '../common/utils/http';
+import promptAction from '@ohos.promptAction';
 
 
 function messageSorter(message1: IMessage, message2: IMessage) {
@@ -36,7 +38,13 @@ struct ChatWindow {
   }
 
   async onPageShow() {
-    const messages = await fetchMessages({ roomId: this.chatChannel.chatroom.id });
+    const { statusCode, data: messages, message } = await fetchMessages({ roomId: this.chatChannel.chatroom.id });
+    if(!isSuccess(statusCode)) {
+      promptAction.showToast({
+        message,
+        duration: 1000,
+      })
+    }
     this.messages = messages.sort(messageSorter);
   }
 
