@@ -1,2 +1,5 @@
 export * from './chatroom'
 export * from './message'
+export * from './auth'
+export * from './user'
+export * from './HttpHelper'

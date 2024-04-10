@@ -1,23 +1,23 @@
-import http from '@ohos.net.http';
-import { IMessage } from '../../common/types/Message.type';
+import http from '@ohos.net.http'
+import { IMessage } from '../../common/types/Message.type'
+import { IResponse } from '../../common/types/Response.type'
+import HttpHelper from './HttpHelper'
 
 type FetchMessagesParams = {
   roomId: number;
 }
 export async function fetchMessages(
     params: FetchMessagesParams,
-): Promise<Array<IMessage>> {
+): Promise<IResponse<Array<IMessage>>> {
   const { roomId } = params;
-  const httpRequest = http.createHttp();
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
-  const response = await httpRequest.request(apiUrl.get() + 'messages?room_id=' + roomId, {
+  const response = await HttpHelper.request(apiUrl.get() + 'messages?room_id=' + roomId, {
     method: http.RequestMethod.GET,
     header: {
       'Content-Type': 'application/json',
       expectDataType: http.HttpDataType.STRING,
     },
   });
-  httpRequest.destroy();
   return JSON.parse(response.result as string);
 }
 
@@ -29,7 +29,7 @@ type CreateMessageParams = {
 
 export async function createMessage(
     params: CreateMessageParams
-): Promise<IMessage> {
+): Promise<IResponse<IMessage>> {
   const httpRequest = http.createHttp();
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
   const response = await httpRequest.request(apiUrl.get() + 'messages', {
