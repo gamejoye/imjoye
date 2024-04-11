@@ -3,6 +3,7 @@
     "pages/Login",
     "pages/Register",
     "pages/HomePage",
-    "pages/ChatWindow"
+    "pages/ChatWindow",
+    "pages/LoadingPage"
   ]
 }
