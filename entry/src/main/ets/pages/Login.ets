@@ -1,9 +1,12 @@
 import router from '@ohos.router';
 import { login, fetchUser } from '../api/httpApi';
-import { AUTHENTICATION_TOKEN } from '../common/constants/appStorageKeys';
+import { USER } from '../common/constants/appStorageKeys';
 import { IUser } from '../common/types/User.type';
 import promptAction from '@ohos.promptAction';
 import { isSuccess } from '../common/utils/http';
+import dataPreferences from '@ohos.data.preferences';
+import common from '@ohos.app.ability.common';
+import { AUTHENTICATION_TOKEN, USER_ID } from '../common/constants/userInforPreferences';
 
 @Entry
 @Component
@@ -15,6 +18,7 @@ struct Login {
     if(this.email === '' || this.password === '') return;
 
     const loginRes = await login({ email: this.email, password: this.password });
+    console.log(JSON.stringify(loginRes));
     if(!isSuccess(loginRes.statusCode)) {
       promptAction.showToast({
         message: loginRes.message,
@@ -24,7 +28,10 @@ struct Login {
     }
 
     const { id, token } = loginRes.data;
-    PersistentStorage.PersistProp<string>(AUTHENTICATION_TOKEN, token);
+    const preferences = await dataPreferences.getPreferences(getContext() as common.UIAbilityContext, 'userInfo');
+    preferences.put(AUTHENTICATION_TOKEN, token);
+    preferences.put(USER_ID, id);
+    preferences.flush();
     const fetchRes = await fetchUser(id);
     if(!isSuccess(fetchRes.statusCode)) {
       promptAction.showToast({
@@ -33,7 +40,7 @@ struct Login {
       });
       return;
     }
-    AppStorage.SetOrCreate<IUser>('user', fetchRes.data);
+    AppStorage.SetOrCreate<IUser>(USER, fetchRes.data);
     router.replaceUrl({
       url: 'pages/HomePage'
     }, (err) => {
