@@ -9,6 +9,7 @@ import { Adapter, ClientChatroomAdapter } from '../common/utils/adapter';
 import { ClientChatroom } from '../common/views/ClientChatroom';
 import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
+import { UserSideBar } from '../common/components/UserSideBar';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
@@ -21,10 +22,11 @@ function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
 struct HomePage {
   @State currentIndex: number = 0;
   @State chatChannels: IChatChannel[] = [];    // TODO 从本地磁盘获取上次存的chatChannels.state
-  private tabsController : TabsController = new TabsController();
+  @State userSideBarShow: boolean = false;
   @State allUnreadMessageCount: number = this.chatChannels
     .map(state => state.unreadMessageCount)
     .reduce((unreadCount, currentSum) => unreadCount + currentSum, 0);
+  private tabsController : TabsController = new TabsController();
 
   async aboutToAppear() {
     emitter.on({
@@ -72,6 +74,9 @@ struct HomePage {
         latestVisitTime: clientRoom.latestVisitTime,
       }
     });
+    console.log('*******************************');
+    console.log(JSON.stringify(latestVisitTimes));
+    console.log('*******************************');
     const { statusCode, data: chatChannels, message } = await fetchChatroomSummaries({
       latestVisitTimes,
     });
@@ -83,6 +88,14 @@ struct HomePage {
     } else {
       this.chatChannels = chatChannels;
     }
+  }
+
+  showUserSideBar() {
+    this.userSideBarShow = true;
+  }
+
+  closeUserSideBar() {
+    this.userSideBarShow = false;
   }
 
   @Builder TabBuilder(title: string, targetIndex: number, selectedImg: Resource, normalImg: Resource, badgeCount: number) {
@@ -108,24 +121,33 @@ struct HomePage {
 
   build() {
     Column() {
-      Tabs({barPosition: BarPosition.End, controller: this.tabsController}) {
-        TabContent() {
-          ChatChannelTab({ chatChannels: $chatChannels })
-        }
-        .tabBar(this.TabBuilder('消息', 0, $r('app.media.selected_message'), $r('app.media.message'), this.allUnreadMessageCount))
+      UserSideBar({ show: $userSideBarShow }) {
+        Column() {
+          Tabs({barPosition: BarPosition.End, controller: this.tabsController}) {
+            TabContent() {
+              ChatChannelTab({
+                chatChannels: $chatChannels,
+                show: $userSideBarShow,
+              })
+            }
+            .tabBar(this.TabBuilder('消息', 0, $r('app.media.selected_message'), $r('app.media.message'), this.allUnreadMessageCount))
 
-        TabContent() {
-          Column() {
-            Text('好友列表')
+            TabContent() {
+              Column() {
+                Text('好友列表')
+              }
+            }
+            .tabBar(this.TabBuilder('好友', 1, $r('app.media.selected_user'), $r('app.media.user'), 0))
           }
+          .onChange((index) => {
+            this.currentIndex = index;
+          })
         }
-        .tabBar(this.TabBuilder('好友', 1, $r('app.media.selected_user'), $r('app.media.user'), 0))
+        .height('100%')
+        .width('100%')
       }
-      .onChange((index) => {
-        this.currentIndex = index;
-      })
     }
-    .height('100%')
     .width('100%')
+    .height('100%')
   }
 }

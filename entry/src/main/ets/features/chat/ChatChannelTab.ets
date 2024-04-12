@@ -7,6 +7,7 @@ import router from '@ohos.router';
 export struct ChatChannelTab {
   @StorageLink('user') user: IUser = null;
   @Link chatChannels: IChatChannel[];
+  @Link show: boolean;
 
   @Builder UserStatusBuilder(status: 'online', user: IUser) {
     Column({ space: 6}) {
@@ -37,6 +38,12 @@ export struct ChatChannelTab {
     return chatChannel.chatroom.id + '_' + (chatChannel.latestMessage?.id ?? '') + '_' + chatChannel.unreadMessageCount;
   }
 
+  showUserSideBar() {
+    animateTo({ duration: 500, curve: Curve.Ease }, () => {
+      this.show = true;
+    })
+  }
+
   build() {
     Column() {
       Row() {
@@ -45,6 +52,8 @@ export struct ChatChannelTab {
             .height(48)
             .width(48)
             .borderRadius(50)
+            .onClick(() => this.showUserSideBar())
+
           this.UserStatusBuilder('online', this.user)
         }
         .width('50%')
