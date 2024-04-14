@@ -4,6 +4,8 @@ import { WebSocketEvent } from '../../common/constants/websocketEvent';
 import { IMessage } from '../../common/types/Message.type';
 import { IWebSocketMessage } from '../../common/types/WebSocketMessage.type';
 import { AUTHORIZATION } from '../../common/constants/websocketHeaders';
+import { getUserInfo } from '../../common/utils/userInfoPreference';
+import { AUTHENTICATION_TOKEN } from '../../common/constants/userInforPreferences';
 
 export class WebSocketService {
   ws: webSocket.WebSocket;
@@ -46,13 +48,13 @@ export class WebSocketService {
       console.log("on error, error:" + JSON.stringify(err));
     });
 
-     const userInfo = await get
-
+    const userInfo = await getUserInfo();
     this.ws.connect(
       target.get(),
       {
-        header: {
-          [AUTHORIZATION]: 'gamejoye',
+        header:
+        {
+          [AUTHORIZATION]: userInfo[AUTHENTICATION_TOKEN],
         }
       },
       (err, value) => {
@@ -65,6 +67,6 @@ export class WebSocketService {
   }
 
   stop() {
-
+    this.ws.close();
   }
 }
