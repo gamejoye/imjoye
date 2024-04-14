@@ -10,6 +10,7 @@ import { ClientChatroom } from '../common/views/ClientChatroom';
 import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
 import { UserSideBar } from '../common/components/UserSideBar';
+import { WebSocketService } from '../api/webSocketApi/service';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
@@ -27,6 +28,8 @@ struct HomePage {
     .map(state => state.unreadMessageCount)
     .reduce((unreadCount, currentSum) => unreadCount + currentSum, 0);
   private tabsController : TabsController = new TabsController();
+
+  webSocketService: WebSocketService = null;
 
   async aboutToAppear() {
     emitter.on({
@@ -50,6 +53,9 @@ struct HomePage {
     }, ({ data }) => {
       this.loadChatChannels();
     })
+
+    this.webSocketService = new WebSocketService();
+    this.webSocketService.start();
   }
 
   onPageShow() {
@@ -58,13 +64,21 @@ struct HomePage {
 
   aboutToDisappear() {
     emitter.off(EmitterEvent.NEW_MESSAGE);
-    clientChatroomService.storeAll(
-      this.chatChannels.map(
-        (chatChannel) => Adapter
-          .from<IChatChannel>(chatChannel)
-          .to<IChatChannel, ClientChatroom>((chatChannel) => new ClientChatroomAdapter(chatChannel).adapt())
-      )
+    let clientChatrooms = this.chatChannels.map(
+      (chatChannel) => Adapter
+        .from<IChatChannel>(chatChannel)
+        .to<IChatChannel, ClientChatroom>((chatChannel) => new ClientChatroomAdapter(chatChannel).adapt())
     );
+    clientChatrooms = clientChatrooms.filter((clientChatroom) => {
+      if(typeof  clientChatroom.latestVisitTime !== 'string') return false;
+      return clientChatroom.latestVisitTime !== "";
+    });
+    clientChatroomService.storeAll(clientChatrooms);
+
+    if(this.webSocketService !== null) {
+      this.webSocketService.stop();
+      this.webSocketService = null;
+    }
   }
 
   async loadChatChannels() {

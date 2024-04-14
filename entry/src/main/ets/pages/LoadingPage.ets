@@ -2,16 +2,13 @@ import { fetchUser } from '../api/httpApi';
 import { USER } from '../common/constants/appStorageKeys';
 import { IUser } from '../common/types/User.type';
 import { isSuccess } from '../common/utils/http';
-import dataPreferences from '@ohos.data.preferences';
-import common from '@ohos.app.ability.common';
-import { WebSocketService } from '../api/webSocketApi/service';
 import router from '@ohos.router';
 import { AUTHENTICATION_TOKEN, USER_ID } from '../common/constants/userInforPreferences';
+import { getUserInfo } from '../common/utils/userInfoPreference';
 
 @Entry
 @Component
 struct LoadingPage {
-  webSocketService: WebSocketService = null;
   @State message: string = '正在加载数据.';
   intervalId: number;
 
@@ -24,23 +21,19 @@ struct LoadingPage {
         this.message = this.message + '.';
       }
     }, 1000);
-    const preferences = await dataPreferences.getPreferences(getContext() as common.UIAbilityContext, 'userInfo');
-    const hasAuthenticationToken = await preferences.has(AUTHENTICATION_TOKEN);
-    const hasUserId = await preferences.has(USER_ID);
+    const userInfo = await getUserInfo();
 
-    if(!hasAuthenticationToken || !hasUserId) {
+    const token = userInfo[AUTHENTICATION_TOKEN];
+    const userId = userInfo[USER_ID];
+    if(!token || userId === -1) {
       router.replaceUrl({
         url: 'pages/Login',
       }, (err) => { });
       return;
     }
-    const authenticationToken = await preferences.get(AUTHENTICATION_TOKEN, '') as string;
-    const userId = await preferences.get(USER_ID, -1) as number;
 
     const { statusCode, data: user } = await fetchUser(userId);
     if(isSuccess(statusCode)) {
-      this.webSocketService = new WebSocketService();
-      this.webSocketService.start();
       AppStorage.SetOrCreate<IUser>(USER, user);
       router.replaceUrl({
         url: 'pages/HomePage',
@@ -53,9 +46,6 @@ struct LoadingPage {
   }
 
   aboutToDisappear() {
-    if(this.webSocketService !== null) {
-      // TODO ws资源释放
-    }
     clearInterval(this.intervalId);
   }
 
