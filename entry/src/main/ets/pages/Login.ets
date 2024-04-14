@@ -4,9 +4,8 @@ import { USER } from '../common/constants/appStorageKeys';
 import { IUser } from '../common/types/User.type';
 import promptAction from '@ohos.promptAction';
 import { isSuccess } from '../common/utils/http';
-import dataPreferences from '@ohos.data.preferences';
-import common from '@ohos.app.ability.common';
 import { AUTHENTICATION_TOKEN, USER_ID } from '../common/constants/userInforPreferences';
+import { storeUserInfo } from '../common/utils/userInfoPreference';
 
 @Entry
 @Component
@@ -28,10 +27,8 @@ struct Login {
     }
 
     const { id, token } = loginRes.data;
-    const preferences = await dataPreferences.getPreferences(getContext() as common.UIAbilityContext, 'userInfo');
-    preferences.put(AUTHENTICATION_TOKEN, token);
-    preferences.put(USER_ID, id);
-    preferences.flush();
+    await storeUserInfo({ [AUTHENTICATION_TOKEN]: token, [USER_ID]: id });
+
     const fetchRes = await fetchUser(id);
     if(!isSuccess(fetchRes.statusCode)) {
       promptAction.showToast({

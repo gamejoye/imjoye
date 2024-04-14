@@ -3,6 +3,7 @@ import emitter from '@ohos.events.emitter';
 import { WebSocketEvent } from '../../common/constants/websocketEvent';
 import { IMessage } from '../../common/types/Message.type';
 import { IWebSocketMessage } from '../../common/types/WebSocketMessage.type';
+import { AUTHORIZATION } from '../../common/constants/websocketHeaders';
 
 export class WebSocketService {
   ws: webSocket.WebSocket;
@@ -11,7 +12,7 @@ export class WebSocketService {
     this.ws = null;
   }
 
-  start() {
+   async start() {
     this.ws = webSocket.createWebSocket();
     const target : SubscribedAbstractProperty<string> = AppStorage.Prop('webSocketUrl');
     this.ws.on('open', (err, value) => {
@@ -45,12 +46,25 @@ export class WebSocketService {
       console.log("on error, error:" + JSON.stringify(err));
     });
 
-    this.ws.connect(target.get(), (err, value) => {
-      if (!err) {
-        console.log("Connected successfully");
-      } else {
-        console.log("Connection failed. Err:" + JSON.stringify(err));
-      }
+     const userInfo = await get
+
+    this.ws.connect(
+      target.get(),
+      {
+        header: {
+          [AUTHORIZATION]: 'gamejoye',
+        }
+      },
+      (err, value) => {
+        if (!err) {
+          console.log("Connected successfully");
+        } else {
+          console.log("Connection failed. Err:" + JSON.stringify(err));
+        }
     });
+  }
+
+  stop() {
+
   }
 }
