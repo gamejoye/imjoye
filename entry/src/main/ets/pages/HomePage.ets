@@ -11,6 +11,10 @@ import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
 import { UserSideBar } from '../common/components/UserSideBar';
 import { WebSocketService } from '../api/webSocketApi/service';
+import { FriendTab } from '../common/components/FriendTab';
+import { IUser } from '../common/types/User.type';
+import { fetchFriends } from '../api/httpApi/user';
+import { USER } from '../common/constants/appStorageKeys';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
@@ -21,12 +25,12 @@ function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
 @Entry
 @Component
 struct HomePage {
+  @StorageLink(USER) user: IUser = null;
   @State currentIndex: number = 0;
   @State chatChannels: IChatChannel[] = [];    // TODO 从本地磁盘获取上次存的chatChannels.state
+  @State friends: IUser[] = [];
   @State userSideBarShow: boolean = false;
-  @State allUnreadMessageCount: number = this.chatChannels
-    .map(state => state.unreadMessageCount)
-    .reduce((unreadCount, currentSum) => unreadCount + currentSum, 0);
+  @State allUnreadMessageCount: number = 0;
   private tabsController : TabsController = new TabsController();
 
   webSocketService: WebSocketService = null;
@@ -60,6 +64,7 @@ struct HomePage {
 
   onPageShow() {
     this.loadChatChannels();
+    this.loadFriends();
   }
 
   aboutToDisappear() {
@@ -88,9 +93,6 @@ struct HomePage {
         latestVisitTime: clientRoom.latestVisitTime,
       }
     });
-    console.log('*******************************');
-    console.log(JSON.stringify(latestVisitTimes));
-    console.log('*******************************');
     const { statusCode, data: chatChannels, message } = await fetchChatroomSummaries({
       latestVisitTimes,
     });
@@ -101,6 +103,21 @@ struct HomePage {
       })
     } else {
       this.chatChannels = chatChannels;
+      this.allUnreadMessageCount = this.chatChannels
+        .map(state => state.unreadMessageCount)
+        .reduce((unreadCount, currentSum) => unreadCount + currentSum, 0);
+    }
+  }
+
+  async loadFriends() {
+    const { statusCode, data: friends, message } = await fetchFriends(this.user.id);
+    if(!isSuccess(statusCode)) {
+      promptAction.showToast({
+        message,
+        duration: 1000,
+      })
+    } else {
+      this.friends = friends;
     }
   }
 
@@ -112,24 +129,24 @@ struct HomePage {
     this.userSideBarShow = false;
   }
 
-  @Builder TabBuilder(title: string, targetIndex: number, selectedImg: Resource, normalImg: Resource, badgeCount: number) {
+  @Builder TabBuilder($$: {title: string, targetIndex: number, badgeCount: number, selectedImg: Resource, normalImg: Resource }) {
     Column() {
       Badge({
-        count: badgeCount,
+        count: $$.badgeCount,
         style: { badgeSize: 16, badgeColor: '#FA2A2D' }
       }) {
-        Image(this.currentIndex === targetIndex ? selectedImg : normalImg)
+        Image(this.currentIndex === $$.targetIndex ? $$.selectedImg : $$.normalImg)
           .size({ width: 25, height: 25 })
       }
-        Text(title)
-          .fontColor(this.currentIndex === targetIndex ? '#1698CE' : '#6B6B6B')
+        Text($$.title)
+          .fontColor(this.currentIndex === $$.targetIndex ? '#1698CE' : '#6B6B6B')
     }
     .width('100%')
     .height(50)
     .justifyContent(FlexAlign.Center)
     .onClick(() => {
-      this.currentIndex = targetIndex;
-      this.tabsController.changeIndex(targetIndex);
+      this.currentIndex = $$.targetIndex;
+      this.tabsController.changeIndex($$.targetIndex);
     })
   }
 
@@ -144,14 +161,27 @@ struct HomePage {
                 show: $userSideBarShow,
               })
             }
-            .tabBar(this.TabBuilder('消息', 0, $r('app.media.selected_message'), $r('app.media.message'), this.allUnreadMessageCount))
+            .tabBar(this.TabBuilder({
+              title: '消息',
+              targetIndex: 0,
+              badgeCount:  this.allUnreadMessageCount,
+              normalImg: $r('app.media.message'),
+              selectedImg: $r('app.media.selected_message'),
+            }))
 
             TabContent() {
-              Column() {
-                Text('好友列表')
-              }
+              FriendTab({
+                friends: $friends,
+                show: $userSideBarShow
+              })
             }
-            .tabBar(this.TabBuilder('好友', 1, $r('app.media.selected_user'), $r('app.media.user'), 0))
+            .tabBar(this.TabBuilder({
+              title: '好友',
+              targetIndex: 1,
+              badgeCount:  0,
+              normalImg: $r('app.media.user'),
+              selectedImg: $r('app.media.selected_user'),
+            }))
           }
           .onChange((index) => {
             this.currentIndex = index;
