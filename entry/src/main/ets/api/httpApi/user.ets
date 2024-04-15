@@ -2,6 +2,7 @@ import http from '@ohos.net.http'
 import HttpHelper from './HttpHelper';
 import { IUser } from '../../common/types/User.type';
 import { IResponse } from '../../common/types/Response.type';
+import { IFriendInfo } from '../../common/types/FriendInfo.type';
 
 export async function fetchUser(id: number): Promise<IResponse<IUser>> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
@@ -18,6 +19,18 @@ export async function fetchUser(id: number): Promise<IResponse<IUser>> {
 export async function fetchFriends(id: number): Promise<IResponse<Array<IUser>>> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
   const response = await HttpHelper.request(`${apiUrl.get()}users/${id}/friends`, {
+    method: http.RequestMethod.GET,
+    header: {
+      'Content-Type': 'application/json',
+      expectDataType: http.HttpDataType.STRING,
+    }
+  });
+  return JSON.parse(response.result as string);
+}
+
+export async function fetchFriendInfo(id: number, friendId: number): Promise<IResponse<IFriendInfo>> {
+  const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
+  const response = await HttpHelper.request(`${apiUrl.get()}users/${id}/friends/${friendId}?detail=full`, {
     method: http.RequestMethod.GET,
     header: {
       'Content-Type': 'application/json',
