@@ -4,6 +4,7 @@
     "pages/Register",
     "pages/HomePage",
     "pages/ChatWindow",
-    "pages/LoadingPage"
+    "pages/LoadingPage",
+    "pages/FriendInfoDetail"
   ]
 }
