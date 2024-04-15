@@ -29,7 +29,7 @@ export struct ChatChannelTab {
     router.pushUrl({
       url: 'pages/ChatWindow',
       params: {
-        chatChannel
+        'chatroom': chatChannel.chatroom
       }
     })
   }
