@@ -1,5 +1,6 @@
 import { IUser } from '../../common/types/User.type';
 import { pinyin4js } from '@ohos/pinyin4js';
+import router from '@ohos.router';
 
 type IFriendsGroup = {
   title: string;
@@ -42,6 +43,15 @@ export struct FriendTab {
     return friendsGroups.sort((groupA, groupB) => groupA.title.charCodeAt(0) - groupB.title.charCodeAt(0));
   }
 
+  handleOnJumpToFriendInfoDetail(friend: IUser) {
+    router.pushUrl({
+      url: 'pages/FriendInfoDetail',
+      params: {
+        'friendId': friend.id,
+      }
+    });
+  }
+
   @Builder UserStatusBuilder() {
     Column({ space: 6}) {
       Text('联系人')
@@ -75,7 +85,7 @@ export struct FriendTab {
         .justifyContent(FlexAlign.Start)
 
         Row() {
-          Image($r('app.media.plus'))
+          Image($r('app.media.user_plus'))
             .height('100%')
         }
         .width('50%')
@@ -121,6 +131,7 @@ export struct FriendTab {
                   .height(40)
                   .padding({ left: '5%', right: '5%' })
                   .backgroundColor('#FFFFFF')
+                  .onClick(() => this.handleOnJumpToFriendInfoDetail(friend))
                 }
               }, (friend: IUser) => this.friendListKeyGenerator(friend))
             }
