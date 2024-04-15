@@ -11,6 +11,7 @@ import { getCurrentDatetime } from '../common/utils/datetime';
 import { EmitterEvent } from '../common/constants/emitterEvent';
 import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
+import { IChatroom } from '../common/types/Chatroom.type';
 
 
 function messageSorter(message1: IMessage, message2: IMessage) {
@@ -26,7 +27,7 @@ struct ChatWindow {
   @State draft: string = '';
   @StorageLink('user') user: IUser = null;
   private listScroller: Scroller = new Scroller();
-  private chatChannel: IChatChannel = router.getParams()['chatChannel'];
+  private chatroom: IChatroom = router.getParams()['chatroom'];
 
   async aboutToAppear() {
     emitter.on({
@@ -38,7 +39,7 @@ struct ChatWindow {
   }
 
   async onPageShow() {
-    const { statusCode, data: messages, message } = await fetchMessages({ roomId: this.chatChannel.chatroom.id });
+    const { statusCode, data: messages, message } = await fetchMessages({ roomId: this.chatroom.id });
     if(!isSuccess(statusCode)) {
       promptAction.showToast({
         message,
@@ -50,7 +51,7 @@ struct ChatWindow {
 
   aboutToDisappear() {
     emitter.off(EmitterEvent.NEW_MESSAGE);
-    clientChatroomService.updateLatestVisitTime(this.chatChannel.chatroom, getCurrentDatetime())
+    clientChatroomService.updateLatestVisitTime(this.chatroom, getCurrentDatetime())
   }
 
   handleOnBack() {
@@ -63,16 +64,16 @@ struct ChatWindow {
     await createMessage({
       content: this.draft,
       userId: this.user.id,
-      chatroomId: this.chatChannel.chatroom.id,
+      chatroomId: this.chatroom.id,
     })
     this.draft = '';
   }
 
-  @Builder ChatroomStatusBuild(chatChannel: IChatChannel) {
+  @Builder ChatroomStatusBuild(chatroom: IChatroom) {
     Flex({
       direction: FlexDirection.Column
     }) {
-      Text(pickChatroomName(chatChannel.chatroom))
+      Text(pickChatroomName(chatroom))
         .width('100%')
         .height('50%')
         .fontSize(20)
@@ -100,7 +101,7 @@ struct ChatWindow {
           .height(48)
           .width(48)
           .onClick(this.handleOnBack)
-        this.ChatroomStatusBuild(this.chatChannel)
+        this.ChatroomStatusBuild(this.chatroom)
       }
       .constraintSize({ minHeight: 60, maxHeight: 60 })
 
