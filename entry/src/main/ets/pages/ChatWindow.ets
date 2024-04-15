@@ -5,7 +5,7 @@ import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
 import { pickChatroomName } from '../common/utils/pickChatRoomName';
 import { IChatChannel } from '../common/types/ChatChannel.type';
-import { MessageList } from '../features/message/MessageList';
+import { MessageList } from '../common/components/MessageList';
 import { clientChatroomService } from '../common/database/rdb/services';
 import { getCurrentDatetime } from '../common/utils/datetime';
 import { EmitterEvent } from '../common/constants/emitterEvent';

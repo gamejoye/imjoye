@@ -2,7 +2,7 @@ import emitter from '@ohos.events.emitter';
 import { fetchChatroomSummaries } from '../api/httpApi/chatroom';
 import { IChatChannel } from '../common/types/ChatChannel.type';
 import { IMessage } from '../common/types/Message.type';
-import { ChatChannelTab } from '../features/chat/ChatChannelTab';
+import { ChatChannelTab } from '../common/components/ChatChannelTab';
 import { clientChatroomService } from '../common/database/rdb/services';
 import { EmitterEvent } from '../common/constants/emitterEvent';
 import { Adapter, ClientChatroomAdapter } from '../common/utils/adapter';

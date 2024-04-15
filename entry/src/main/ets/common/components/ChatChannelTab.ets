@@ -1,6 +1,6 @@
-import { IUser } from '../../common/types/User.type';
-import { IChatChannel } from '../../common/types/ChatChannel.type';
-import { pickChatroomName } from '../../common/utils/pickChatRoomName';
+import { IUser } from '../types/User.type';
+import { IChatChannel } from '../types/ChatChannel.type';
+import { pickChatroomName } from '../utils/pickChatRoomName';
 import router from '@ohos.router';
 
 @Component

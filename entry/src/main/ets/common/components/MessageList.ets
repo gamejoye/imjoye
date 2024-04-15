@@ -1,5 +1,5 @@
-import { IMessage } from '../../common/types/Message.type'
-import { IUser } from '../../common/types/User.type';
+import { IMessage } from '../types/Message.type'
+import { IUser } from '../types/User.type';
 
 @Component
 export struct MessageList {
