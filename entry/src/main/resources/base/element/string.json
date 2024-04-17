@@ -15,6 +15,10 @@
     {
       "name": "internet_permission_reason",
       "value": "Used to access Internet"
+    },
+    {
+      "name": "read_media_permission_reason",
+      "value": "Used to access Local media resource"
     }
   ]
 }
