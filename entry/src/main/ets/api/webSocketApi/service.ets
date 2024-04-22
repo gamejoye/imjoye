@@ -6,6 +6,8 @@ import { IWebSocketMessage } from '../../common/types/WebSocketMessage.type';
 import { AUTHORIZATION } from '../../common/constants/websocketHeaders';
 import { getUserInfo } from '../../common/utils/userInfoPreference';
 import { AUTHENTICATION_TOKEN } from '../../common/constants/userInforPreferences';
+import { EmitterEvent } from '../../common/constants/emitterEvent';
+import { IEmitterMessage } from '../../common/types/EmitterMessage.type';
 
 export class WebSocketService {
   ws: webSocket.WebSocket;
@@ -21,21 +23,50 @@ export class WebSocketService {
       console.log("on open, status:" + JSON.stringify(value));
     });
 
-    this.ws.on('message', (err, value) => {
+    this.ws.on('message', async (err, value) => {
       if(typeof value !== 'string') {
         value = String.fromCharCode.apply(null, new Uint16Array(value));
       }
       const result: IWebSocketMessage<unknown> = JSON.parse(value as string);
       switch (result.event) {
-        case WebSocketEvent.NEW_MESSAGE: {
+        case WebSocketEvent.MESSAGE_ACK: {
           const message = result.payload as IMessage;
+          const emitterData: IEmitterMessage = {
+            plainText: JSON.stringify(message)
+          };
           emitter.emit({
-            eventId: WebSocketEvent.NEW_MESSAGE,
+            eventId: EmitterEvent.NEW_MESSAGE,
           }, {
-            data: {
-              plainText: JSON.stringify(message)
-            },
+            data: emitterData,
           });
+
+          const messageAckSyn: IWebSocketMessage<IMessage> = {
+            event: WebSocketEvent.MESSAGE_ACK_SYN,
+            payload: message,
+          };
+
+          // TODO auto retry
+          this.ws.send(JSON.stringify(messageAckSyn));
+          break;
+        }
+        case WebSocketEvent.MESSAGE_NOTIFY_SYN: {
+          const message = result.payload as IMessage;
+          const emitterData: IEmitterMessage = {
+            plainText: JSON.stringify(message),
+          };
+          emitter.emit({
+            eventId: EmitterEvent.NEW_MESSAGE,
+          }, {
+            data: emitterData,
+          });
+
+          const notifyAck: IWebSocketMessage<IMessage> = {
+            event: WebSocketEvent.MESSAGE_NOTIFY_ACK,
+            payload: message,
+          };
+
+          // TODO auto retry
+          this.ws.send(JSON.stringify(notifyAck));
           break;
         }
         default: {

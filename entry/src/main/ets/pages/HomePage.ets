@@ -15,6 +15,7 @@ import { FriendTab } from '../common/components/FriendTab';
 import { IUser } from '../common/types/User.type';
 import { fetchFriends } from '../api/httpApi/user';
 import { USER } from '../common/constants/appStorageKeys';
+import { IEmitterMessage } from '../common/types/EmitterMessage.type';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage.createTime);
@@ -38,7 +39,7 @@ struct HomePage {
   async aboutToAppear() {
     emitter.on({
       eventId: EmitterEvent.NEW_MESSAGE,
-    }, ({ data }: { data: { plainText: string } }) => {
+    }, ({ data }: { data: IEmitterMessage }) => {
       const message: IMessage = JSON.parse(data.plainText);
       this.chatChannels = this.chatChannels.map(
         (chatChannel) => {

@@ -10,8 +10,8 @@ export default class EntryAbility extends UIAbility {
     /**
      * TODO 环境变量初始化
      */
-    Environment.EnvProp('apiUrl', 'http://10.22.194.188:8080/');
-    Environment.EnvProp('webSocketUrl', 'ws://10.22.194.188:5173/');
+    Environment.EnvProp('apiUrl', 'http://192.168.43.71:8080/');
+    Environment.EnvProp('webSocketUrl', 'ws://192.168.43.71:5173/');
 
     RdbHelper.initRdb(this.context);
   }

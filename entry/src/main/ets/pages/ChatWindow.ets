@@ -4,7 +4,6 @@ import { fetchMessages, createMessage } from '../api/httpApi';
 import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
 import { pickChatroomName } from '../common/utils/pickChatRoomName';
-import { IChatChannel } from '../common/types/ChatChannel.type';
 import { MessageList } from '../common/components/MessageList';
 import { clientChatroomService } from '../common/database/rdb/services';
 import { getCurrentDatetime } from '../common/utils/datetime';
@@ -12,6 +11,7 @@ import { EmitterEvent } from '../common/constants/emitterEvent';
 import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
 import { IChatroom } from '../common/types/Chatroom.type';
+import { IEmitterMessage } from '../common/types/EmitterMessage.type';
 
 
 function messageSorter(message1: IMessage, message2: IMessage) {
@@ -32,7 +32,7 @@ struct ChatWindow {
   async aboutToAppear() {
     emitter.on({
       eventId: EmitterEvent.NEW_MESSAGE,
-    }, ({ data }: { data: { plainText: string } }) => {
+    }, ({ data }: { data: IEmitterMessage }) => {
       const message: IMessage = JSON.parse(data.plainText);
       this.messages = [...this.messages, message].sort(messageSorter);
     })
