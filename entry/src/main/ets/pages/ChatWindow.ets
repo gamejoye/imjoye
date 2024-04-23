@@ -76,17 +76,19 @@ struct ChatWindow {
       Text(pickChatroomName(chatroom))
         .width('100%')
         .height('50%')
-        .fontSize(20)
+        .fontSize($r('app.float.big_text_size'))
       Row({ space: 6 }) {
         // 聊天室用户在线情况
-        Circle({ height: 10, width: 10})
-          .fill('green')
+        Circle({
+          height: 10,
+          width: 10
+        })
+          .fill($r('app.color.green_user_status_color'))
         Text('用户在线')
       }
       .width('100%')
       .height('50%')
     }
-    .height(60)
   }
 
   build() {
@@ -98,14 +100,23 @@ struct ChatWindow {
         alignItems: ItemAlign.Center
       }) {
         Image($r('app.media.back'))
-          .height(48)
-          .width(48)
+          .height('100%')
           .onClick(this.handleOnBack)
         this.ChatroomStatusBuild(this.chatroom)
       }
-      .constraintSize({ minHeight: 60, maxHeight: 60 })
+      .height($r('app.float.chat_window_header_height'))
+      .padding({
+        top: $r('app.float.chat_window_header_vertical_padding'),
+        bottom: $r('app.float.chat_window_header_vertical_padding'),
+        left: $r('app.float.chat_window_header_horizontal_padding'),
+        right: $r('app.float.chat_window_header_horizontal_padding'),
+      })
+      .flexShrink(0)
 
-      MessageList({ messages: $messages, listScroller: this.listScroller })
+      MessageList({
+        messages: $messages,
+        listScroller: this.listScroller
+      })
 
       Flex({
         direction: FlexDirection.Row,
@@ -120,16 +131,23 @@ struct ChatWindow {
         .scrollBar(BarState.Off)
 
         Button('发送')
-          .width(80)
+          .width($r('app.float.chat_window_send_message_button_width'))
           .type(ButtonType.Normal)
-          .borderRadius(8)
+          .borderRadius($r('app.float.normal_button_border_radius'))
           .enabled(this.draft !== '')
           .onClick(() => this.handleOnMessageSubmit())
+          .margin({
+            left: $r('app.float.chat_window_send_message_button_horizontal_margin'),
+            right: $r('app.float.chat_window_send_message_button_horizontal_margin')
+          })
       }
-      .padding(6)
-      .constraintSize({ maxHeight: 240 })
+      .padding($r('app.float.chat_window_footer_padding'))
+      .constraintSize({
+        minHeight: $r('app.float.chat_window_footer_min_height'),
+        maxHeight: $r('app.float.chat_window_footer_max_height')
+      })
     }
     .width('100%')
-    .height('99%')
+    .height('100%')
   }
 }

@@ -3,6 +3,58 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "container_background_color",
+      "value": "#F1F3F5"
+    },
+    {
+      "name": "blue_text_color",
+      "value": "#007DFF"
+    },
+    {
+      "name": "grey_text_color",
+      "value": "#808080"
+    },
+    {
+      "name": "grey_loading_progress_color",
+      "value": "#808080"
+    },
+    {
+      "name": "grey_border",
+      "value": "#808080"
+    },
+    {
+      "name": "red_badge_color",
+      "value": "#FA2A2D"
+    },
+    {
+      "name": "green_user_status_color",
+      "value": "#00FF00"
+    },
+    {
+      "name": "chat_window_message_left_color",
+      "value": "#cccccc"
+    },
+    {
+      "name": "chat_window_message_right_color",
+      "value": "#ff6c8bef"
+    },
+    {
+      "name": "container_item_background_color",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "grey_chat_channel_list_divider_color",
+      "value": "#ffe9f0f0"
+    },
+    {
+      "name": "friend_tab_items_head_background_color",
+      "value": "#F1F3F5"
+    },
+    {
+      "name": "user_side_bar_container_background_color",
+      "value": "#EEEEEE"
     }
   ]
 }

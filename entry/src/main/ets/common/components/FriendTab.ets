@@ -53,20 +53,20 @@ export struct FriendTab {
   }
 
   @Builder UserStatusBuilder() {
-    Column({ space: 6}) {
+    Column({ space: 6 }) {
       Text('联系人')
         .width('100%')
         .height('100%')
-        .fontSize(20)
+        .fontSize($r('app.float.big_text_size'))
     }
   }
 
   @Builder ItemHead(text: string) {
     Text(text)
-      .fontSize(16)
-      .backgroundColor('#fff1f3f5')
+      .fontSize($r('app.float.normal_text_size'))
+      .backgroundColor($r('app.color.friend_tab_items_head_background_color'))
       .width('100%')
-      .padding(5)
+      .padding($r('app.float.friend_tab_items_head_padding'))
   }
 
   build() {
@@ -74,9 +74,9 @@ export struct FriendTab {
       Row() {
         Row({ space: 6 }) {
           Image(this.user.avatarUrl)
-            .height(48)
-            .width(48)
-            .borderRadius(50)
+            .height($r('app.float.friend_tab_user_nav_avatar_size'))
+            .width($r('app.float.friend_tab_user_nav_avatar_size'))
+            .borderRadius($r('app.float.friend_tab_user_nav_avatar_border_radius'))
             .onClick(() => this.showUserSideBar())
 
           this.UserStatusBuilder()
@@ -92,17 +92,26 @@ export struct FriendTab {
         .justifyContent(FlexAlign.End)
       }
       .justifyContent(FlexAlign.Start)
-      .height('8%')
+      .height($r('app.float.friend_tab_user_nav_height'))
       .width('100%')
-      .padding({ left: '5%', right: '5%', top: 6, bottom: 6})
+      .padding({
+        left: $r('app.float.friend_tab_user_nav_horizontal_padding'),
+        right: $r('app.float.friend_tab_user_nav_horizontal_padding'),
+        top: $r('app.float.friend_tab_user_nav_vertical_padding'),
+        bottom: $r('app.float.friend_tab_user_nav_vertical_padding')
+      })
 
       Column() {
         Search({ placeholder: '搜索好友' })
-          .height(40)
+          .height($r('app.float.friend_tab_search_height'))
           .width('100%')
-          .placeholderColor(Color.Grey)
-          .placeholderFont({ size: 14, weight: 400 })
-          .textFont({ size: 14, weight: 400 })
+          .placeholderColor($r('app.color.grey_text_color'))
+          .placeholderFont({
+            size: $r('app.float.small_text_size'),
+          })
+          .textFont({
+            size: $r('app.float.small_text_size'),
+          })
           .onSubmit((value: string) => {
 
           })
@@ -111,8 +120,11 @@ export struct FriendTab {
           })
       }
       .width('100%')
-      .padding({ left: '5%', right: '5%' })
-      .backgroundColor('#FFFFFF')
+      .padding({
+        left: $r('app.float.friend_tab_search_horizontal_padding'),
+        right: $r('app.float.friend_tab_search_horizontal_padding')
+      })
+      .backgroundColor($r('app.color.container_item_background_color'))
 
       Column() {
         List() {
@@ -122,15 +134,18 @@ export struct FriendTab {
                 ListItem() {
                   Row({ space: 6 }) {
                     Image(friend.avatarUrl)
-                      .width(32)
-                      .height(32)
-                      .borderRadius(50)
+                      .width($r('app.float.friend_tab_items_avatar_size'))
+                      .height($r('app.float.friend_tab_items_avatar_size'))
+                      .borderRadius($r('app.float.friend_tab_items_avatar_border_radius'))
                     Text(friend.username)
                   }
                   .width('100%')
-                  .height(40)
-                  .padding({ left: '5%', right: '5%' })
-                  .backgroundColor('#FFFFFF')
+                  .height($r('app.float.friend_tab_items_height'))
+                  .padding({
+                    left: $r('app.float.friend_tab_items_vertical_padding'),
+                    right: $r('app.float.friend_tab_items_vertical_padding'),
+                  })
+                  .backgroundColor($r('app.color.container_item_background_color'))
                   .onClick(() => this.handleOnJumpToFriendInfoDetail(friend))
                 }
               }, (friend: IUser) => this.friendListKeyGenerator(friend))
@@ -139,11 +154,7 @@ export struct FriendTab {
         }
         .height('100%')
         .width("100%")
-        .backgroundColor('#F1F3F5')
-        .divider({
-          strokeWidth: 1,
-          color: '#ffe9f0f0'
-        })
+        .backgroundColor($r('app.color.container_background_color'))
       }
     }
     .width('100%')

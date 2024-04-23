@@ -10,15 +10,19 @@ export struct ChatChannelTab {
   @Link show: boolean;
 
   @Builder UserStatusBuilder(status: 'online', user: IUser) {
-    Column({ space: 6}) {
+    Column({ space: 6 }) {
       Text(user.username)
         .width('100%')
         .height('50%')
-        .fontSize(20)
+        .fontSize($r('app.float.normal_text_size'))
       Row({ space: 6}) {
-        Circle({ width: 10, height: 10})
-          .fill(status === 'online' ? 'green' : 'blue')
+        Circle({
+          width: 10,
+          height: 10
+        })
+          .fill($r('app.color.green_user_status_color'))
         Text('在线')
+          .fontSize($r('app.float.normal_text_size'))
       }
       .width('100%')
       .height('50%')
@@ -49,9 +53,9 @@ export struct ChatChannelTab {
       Row() {
         Row({ space: 6 }) {
           Image(this.user.avatarUrl)
-            .height(48)
-            .width(48)
-            .borderRadius(50)
+            .height($r('app.float.chat_channel_avatar_size'))
+            .width($r('app.float.chat_channel_avatar_size'))
+            .borderRadius($r('app.float.chat_channel_avatar_border_radius'))
             .onClick(() => this.showUserSideBar())
 
           this.UserStatusBuilder('online', this.user)
@@ -67,9 +71,14 @@ export struct ChatChannelTab {
         .justifyContent(FlexAlign.End)
       }
       .justifyContent(FlexAlign.Start)
-      .height('8%')
+      .height($r('app.float.chat_channel_user_nav_height'))
       .width('100%')
-      .padding({ left: '5%', right: '5%', top: 6, bottom: 6})
+      .padding({
+        left: $r('app.float.chat_channel_user_nav_horizontal_padding'),
+        right: $r('app.float.chat_channel_user_nav_horizontal_padding'),
+        top: $r('app.float.chat_channel_user_nav_vertical_padding'),
+        bottom: $r('app.float.chat_channel_user_nav_vertical_padding')
+      })
 
       Column() {
         List() {
@@ -78,36 +87,51 @@ export struct ChatChannelTab {
               Row({ space: 6 }) {
                 Badge({
                   count: chatChannel.unreadMessageCount,
-                  position: BadgePosition.RightTop,
-                  style: { badgeSize: 16, badgeColor: '#FA2A2D' }
+                  style: {
+                    badgeSize: 16,
+                    badgeColor: $r('app.color.red_badge_color')
+                  }
                 }) {
                   Image($r('app.media.logo'))
-                    .width(48)
-                    .height(48)
-                    .borderRadius(50)
+                    .width($r('app.float.chat_channel_chat_room_avatar_size'))
+                    .height($r('app.float.chat_channel_chat_room_avatar_size'))
+                    .borderRadius($r('app.float.chat_channel_avatar_border_radius'))
                 }
 
                 Column() {
                   Text(pickChatroomName(chatChannel.chatroom))
                     .width('100%')
                     .height('50%')
-                    .fontSize(24)
+                    .fontSize($r('app.float.big_text_size'))
+                    .maxLines(1)
+                    .textOverflow({ overflow: TextOverflow.Ellipsis })
                   Text(chatChannel.latestMessage?.content ?? '')
                     .width('100%')
                     .height('50%')
-                    .fontSize(16)
-                }.padding({ top: 10, bottom: 10 })
+                    .fontSize($r('app.float.normal_text_size'))
+                    .maxLines(1)
+                    .textOverflow({ overflow: TextOverflow.Ellipsis })
+                }
               }
-              .height(72)
-              .padding({ left: '5%', right: '5%' })
-              .backgroundColor('#FFFFFF')
+              .height($r('app.float.chat_channel_list_row_height'))
+              .padding({
+                left: $r('app.float.chat_channel_list_row_horizontal_padding'),
+                right: $r('app.float.chat_channel_list_row_horizontal_padding'),
+                top: $r('app.float.chat_channel_list_row_vertical_padding'),
+                bottom: $r('app.float.chat_channel_list_row_vertical_padding'),
+              })
+              .backgroundColor($r('app.color.container_item_background_color'))
               .onClick(() => this.handleOnJumpChatRoom(chatChannel))
             }
           }, (chatChannel: IChatChannel) => this.chatChannelListKeyGenerator(chatChannel))
         }
         .height('100%')
-        .width("100%")
-        .backgroundColor('#F1F3F5')
+        .width('100%')
+        .backgroundColor($r('app.color.container_background_color'))
+        .divider({
+          strokeWidth: $r('app.float.chat_channel_list_divider_width'),
+          color: $r('app.color.grey_chat_channel_list_divider_color')
+        })
       }
     }
     .width('100%')

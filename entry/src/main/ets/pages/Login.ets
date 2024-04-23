@@ -60,39 +60,43 @@ struct Login {
 
   build() {
     Row() {
-      Column({ space: 20 }) {
+      Column({ space: '20vp' }) {
         Image($r('app.media.logo'))
-          .width(150)
+          .width($r('app.float.login_logo_size'))
+          .height($r('app.float.login_logo_size'))
+          .margin({
+            bottom: $r('app.float.login_logo_margin_bottom'),
+            top: $r('app.float.login_logo_margin_top')
+          })
           .interpolation(ImageInterpolation.High)
-          .borderRadius(50)
-          .margin({ bottom: 40 })
+          .borderRadius($r('app.float.login_logo_border_radius'))
         TextInput({ placeholder: '输入你的邮箱' })
-          .height(45)
+          .height($r('app.float.login_input_height'))
           .onChange((value) => {
             this.email = value;
           })
         TextInput({ placeholder: '输入你的密码' }).type(InputType.Password)
-          .height(45)
+          .height($r('app.float.login_input_height'))
           .onChange((value) => {
             this.password = value;
           })
         Button('登录')
-          .width(150)
+          .width($r('app.float.login_button_width'))
           .enabled(this.status !== 'loading')
           .onClick(this.handleOnLogin)
         Text('前往登录')
-          .fontColor('#007DFF')
-          .fontSize(12)
+          .fontColor($r('app.color.blue_text_color'))
+          .fontSize($r('app.float.little_text_size'))
           .fontWeight(FontWeight.Medium)
           .onClick(this.handleJumpToRegister)
         if (this.status === 'loading') {
           LoadingProgress()
-            .color(Color.Grey)
-            .height(30)
-            .width(30)
+            .color($r('app.color.grey_loading_progress_color'))
+            .height($r('app.float.loading_progress_size'))
+            .height($r('app.float.loading_progress_size'))
         }
       }
-      .padding(20)
+      .padding($r('app.float.login_column_padding'))
     }
     .width('100%')
   }

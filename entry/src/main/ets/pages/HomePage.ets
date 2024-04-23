@@ -134,16 +134,20 @@ struct HomePage {
     Column() {
       Badge({
         count: $$.badgeCount,
-        style: { badgeSize: 16, badgeColor: '#FA2A2D' }
+        style: {
+          badgeSize: 16,
+          badgeColor: $r('app.color.red_badge_color')
+        }
       }) {
         Image(this.currentIndex === $$.targetIndex ? $$.selectedImg : $$.normalImg)
-          .size({ width: 25, height: 25 })
+          .height($r('app.float.home_page_tar_image_size'))
+          .width($r('app.float.home_page_tar_image_size'))
       }
-        Text($$.title)
-          .fontColor(this.currentIndex === $$.targetIndex ? '#1698CE' : '#6B6B6B')
+      Text($$.title)
+        .fontColor(this.currentIndex === $$.targetIndex ? $r('app.color.blue_text_color') : $r('app.color.grey_text_color'))
     }
     .width('100%')
-    .height(50)
+    .height($r('app.float.home_page_tar_size'))
     .justifyContent(FlexAlign.Center)
     .onClick(() => {
       this.currentIndex = $$.targetIndex;

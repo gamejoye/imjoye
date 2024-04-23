@@ -54,20 +54,19 @@ struct FriendInfoDetail {
       Row() {
         Column() {
           Text('正在加载数据...')
-            .fontSize(24)
+            .fontSize($r('app.float.big_text_size'))
             .fontWeight(FontWeight.Bold)
-            .fontColor('#80808080')
-            .opacity(0.5)
+            .fontColor($r('app.color.grey_text_color'))
         }
         .width('100%')
       }
       .height('100%')
 
-    } else if(this.friendInfoStatus === 'fail') {
+    } else if (this.friendInfoStatus === 'fail') {
       Row() {
         Column() {
           Text('好友信息获取失败...')
-            .fontSize(24)
+            .fontSize($r('app.float.big_text_size'))
             .fontWeight(FontWeight.Bold)
         }
         .width('100%')
@@ -77,90 +76,103 @@ struct FriendInfoDetail {
       Flex({ direction: FlexDirection.Column }) {
         Flex({ direction: FlexDirection.Row }) {
           Image(this.friendInfo.user.avatarUrl)
-            .width(150)
-            .height(150)
-            .margin({ left: '10px', right: '10px' })
-            .borderRadius(100)
+            .width($r('app.float.friend_info_detail_avatar_size'))
+            .height($r('app.float.friend_info_detail_avatar_size'))
+            .margin({
+              left: $r('app.float.friend_info_detail_avatar_horizontal_margin'),
+              right: $r('app.float.friend_info_detail_avatar_horizontal_margin')
+            })
+            .borderRadius($r('app.float.friend_info_detail_avatar_border_radius'))
             .flexShrink(0)
 
-          Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.Start }) {
+          Flex({
+            direction: FlexDirection.Column,
+            justifyContent: FlexAlign.Center,
+          }) {
             Text(this.friendInfo.user.username)
-              .fontSize(24)
-            Divider().strokeWidth(3)
+              .fontSize($r('app.float.big_text_size'))
+            Divider()
             Text(`UID: ${this.friendInfo.user.id}`)
-              .fontSize(16)
-              .fontColor('#80808080')
-            Divider().strokeWidth(3)
+              .fontSize($r('app.float.normal_text_size'))
+              .fontColor($r('app.color.grey_text_color'))
+            Divider()
             Text(`邮箱: ${this.friendInfo.user.email}`)
-              .fontSize(16)
-              .fontColor('#80808080')
+              .fontSize($r('app.float.normal_text_size'))
+              .fontColor($r('app.color.grey_text_color'))
           }
         }
-        .height(150)
-        .margin({ bottom: 10 })
+        .height($r('app.float.friend_info_detail_header_height'))
+        .margin({
+          top: $r('app.float.friend_info_detail_flex_vertical_margin'),
+          bottom: $r('app.float.friend_info_detail_flex_vertical_margin')
+        })
 
-        Flex({ direction: FlexDirection.Row }) {
-          Image(this.friendInfo.user.avatarUrl)
-            .width(80)
-            .height(80)
-            .margin({ left: '10px', right: '10px' })
-            .borderWidth(3)
-            .borderColor('#aabbcc')
-            .flexShrink(0)
-          Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.Start }) {
-            Text('Description')
-            Divider().strokeWidth(3)
-            Text(this.friendInfo.user.description)
-              .maxLines(3);
-          }
-          .height(80)
-          .borderWidth(3)
-          .borderColor('#aabbcc')
+        Flex({ alignItems: ItemAlign.Center }) {
+          Text(this.friendInfo.user.description)
+            .fontSize($r('app.float.normal_text_size'))
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+            .flexGrow(1)
+          Image($r('app.media.next'))
+            .width('28vp')
+            .height('28vp')
         }
-        .height(80)
+        .height($r('app.float.friend_info_detail_item_height'))
+        .padding({
+          top: $r('app.float.friend_info_detail_item_vertical_padding'),
+          bottom: $r('app.float.friend_info_detail_item_vertical_padding'),
+          left: $r('app.float.friend_info_detail_item_horizontal_padding'),
+          right: $r('app.float.friend_info_detail_item_horizontal_padding')
+        })
+        Divider()
 
         Flex()
           .flexGrow(1)
 
-        Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.Center, alignItems: ItemAlign.Center }) {
-          Button({ type: ButtonType.Normal, stateEffect: true }) {
-            Image($r('app.media.plus'))
-              .width(60)
-              .height(60)
+        Flex({
+          direction: FlexDirection.Row,
+          justifyContent: FlexAlign.SpaceAround,
+          alignItems: ItemAlign.Center
+        }) {
+          Button({ type: ButtonType.Normal }) {
+            Text('设置')
+              .fontSize($r('app.float.big_text_size'))
           }
-          .width(80)
-          .height(80)
-          .borderWidth(3)
-          .borderColor('#aabbcc')
-          .backgroundColor('#F1F3F5')
+          .width($r('app.float.friend_info_detail_send_message_button_width'))
+          .padding($r('app.float.friend_info_detail_send_message_button_padding'))
+          .borderRadius($r('app.float.normal_button_border_radius'))
+          .backgroundColor($r('app.color.container_item_background_color'))
+          .border({
+            width: $r('app.float.normal_border_width'),
+            color: $r('app.color.grey_border')
+          })
 
-          Button({ type: ButtonType.Circle, stateEffect: true }) {
-            Image($r('app.media.email'))
-              .width(80)
-              .height(80)
+          Button({ type: ButtonType.Normal }) {
+            Text('发送消息')
+              .fontSize($r('app.float.big_text_size'))
           }
-          .width(120)
-          .height(120)
-          .margin({ left: '10px', right: '10px' })
+          .width($r('app.float.friend_info_detail_send_message_button_width'))
+          .padding($r('app.float.friend_info_detail_send_message_button_padding'))
+          .borderRadius($r('app.float.normal_button_border_radius'))
           .onClick(() => this.handleOnJumpToChatWindow())
-
-          Button({ type: ButtonType.Normal, stateEffect: true }) {
-            Image($r('app.media.setting'))
-              .width(60)
-              .height(60)
-          }
-          .width(80)
-          .height(80)
-          .borderWidth(3)
-          .borderColor('#aabbcc')
-          .backgroundColor('#F1F3F5')
         }
-        .height(150)
+        .height($r('app.float.friend_info_detail_footer_height'))
+        .padding({
+          top: $r('app.float.friend_info_detail_footer_vertical_padding'),
+          bottom: $r('app.float.friend_info_detail_footer_vertical_padding'),
+          left: $r('app.float.friend_info_detail_footer_horizontal_padding'),
+          right: $r('app.float.friend_info_detail_footer_horizontal_padding')
+        })
       }
       .height('100%')
       .width('100%')
-      .padding({ top: 5, bottom: 5, left: '6%', right: '6%' })
-      .backgroundColor('#F1F3F5')
+      .padding({
+        top: $r('app.float.friend_info_detail_vertical_padding'),
+        bottom: $r('app.float.friend_info_detail_vertical_padding'),
+        left: $r('app.float.friend_info_detail_horizontal_padding'),
+        right: $r('app.float.friend_info_detail_horizontal_padding'),
+      })
+      .backgroundColor($r('app.color.container_background_color'))
     }
   }
 }
