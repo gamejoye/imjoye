@@ -53,10 +53,9 @@ struct LoadingPage {
     Row() {
       Column() {
         Text(this.message)
-          .fontSize(24)
+          .fontSize($r('app.float.big_text_size'))
           .fontWeight(FontWeight.Bold)
-          .fontColor('#80808080')
-          .opacity(0.5)
+          .fontColor($r('app.color.grey_text_color'))
       }
       .width('100%')
     }

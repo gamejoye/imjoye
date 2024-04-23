@@ -112,51 +112,51 @@ struct Register {
     Row() {
       Column({ space: 20 }) {
         Image(this.avatarUrl ? this.avatarUrl : $r('app.media.plus'))
-          .height(150)
-          .width(150)
+          .height($r('app.float.register_avatar_size'))
+          .height($r('app.float.register_avatar_size'))
           .border({ width: 1 })
           .objectFit(ImageFit.Cover)
-          .borderRadius(100)
+          .borderRadius($r('app.float.register_avatar_border_radius'))
           .onClick(() => this.handleOnOpenGallery())
 
         TextInput({ placeholder: '你的邮箱' })
-          .height(45)
+          .height($r('app.float.register_input_height'))
           .onChange((value) => {
             this.email = value;
           })
         TextInput({ placeholder: '你的用户名' })
-          .height(45)
+          .height($r('app.float.register_input_height'))
           .onChange((value) => {
             this.username = value;
           })
         TextInput({ placeholder: '你的密码' }).type(InputType.Password)
-          .height(45)
+          .height($r('app.float.register_input_height'))
           .onChange((value) => {
             this.password = value;
           })
         TextInput({ placeholder: '再次验证你的密码' }).type(InputType.Password)
-          .height(45)
+          .height($r('app.float.register_input_height'))
           .onChange((value) => {
             this.confirmPassword = value;
           })
         Button('注册')
-          .width(150)
+          .width($r('app.float.register_button_width'))
           .enabled(this.status !== 'loading')
           .onClick(this.handleOnRegister)
         Text('前往登录')
-          .fontColor('#007DFF')
-          .fontSize(12)
+          .fontColor($r('app.color.blue_text_color'))
+          .fontSize($r('app.float.little_text_size'))
           .fontWeight(FontWeight.Medium)
           .onClick(this.handleJumpToLogin)
         if (this.status === 'loading') {
           Progress({value: this.uploadedSize, total: this.totalSize})
           LoadingProgress()
-            .color(Color.Grey)
-            .height(30)
-            .width(30)
+            .color($r('app.color.grey_loading_progress_color'))
+            .height($r('app.float.loading_progress_size'))
+            .height($r('app.float.loading_progress_size'))
         }
       }
-      .padding(20)
+      .padding($r('app.float.register_column_padding'))
     }
     .width('100%')
   }

@@ -30,63 +30,76 @@ export struct UserSideBar {
       Column({ space: 12 }) {
         Row() {
           Text('用户信息')
+            .fontSize($r('app.float.normal_text_size'))
           Image($r('app.media.close'))
+            .height('100%')
             .onClick(() => this.closeUserSideBar())
-            .height(30)
         }
         .justifyContent(FlexAlign.SpaceBetween)
         .width('100%')
-        .height(30)
+        .height($r('app.float.user_side_bar_header_height'))
 
         Row({ space: 6 }) {
           Image(this.user.avatarUrl)
-            .height(60)
-            .width(60)
-            .borderRadius(50)
+            .height($r('app.float.user_side_bar_avatar_size'))
+            .width($r('app.float.user_side_bar_avatar_size'))
+            .borderRadius($r('app.float.user_side_bar_avatar_border_radius'))
           Column({ space: 6}) {
             Text(this.user.username)
               .width('100%')
-              .fontSize(24)
+              .fontSize($r('app.float.big_text_size'))
               .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
             Text(this.user.email)
               .width('100%')
-              .fontColor('#80808080')
+              .fontColor($r('app.color.grey_text_color'))
               .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
           }
         }
         .width('100%')
 
-        Divider().strokeWidth(4)
+        Divider()
+          .strokeWidth('2vp')
         Column({ space: 6 }) {
           Text('个性签名')
-            .fontSize(24)
+            .fontSize($r('app.float.big_text_size'))
 
           Text(this.user.description)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
             .maxLines(5)
-            .fontSize(12)
-            .padding(10)
+            .fontSize($r('app.float.small_text_size'))
+            .padding($r('app.float.user_side_bar_description_horizontal_padding'))
             .width('100%')
-
         }
         .alignItems(HorizontalAlign.Start)
         .width('100%')
 
-        Divider().strokeWidth(4)
+        Blank()
         Button({ type: ButtonType.Normal }) {
           Text('退出登录')
-            .fontSize(24)
+            .fontSize($r('app.float.big_text_size'))
         }
-        .width('100%')
-        .padding(10)
+        .width($r('app.float.user_side_bar_logout_button_width'))
+        .padding($r('app.float.user_side_bar_logout_button_padding'))
+        .borderRadius($r('app.float.normal_button_border_radius'))
         .onClick(() => {
           this.dialogController.open();
         })
       }
       .height('100%')
       .width('100%')
-      .padding({ top: 5, bottom: 5, left: '6%', right: '6%' })
-      .backgroundColor('#aabbcc')
+      .border({
+        width: $r('app.float.normal_border_width'),
+        color: $r('app.color.grey_border')
+      })
+      .padding({
+        top: $r('app.float.user_side_bar_top_padding'),
+        bottom: $r('app.float.user_side_bar_bottom_padding'),
+        left: $r('app.float.user_side_bar_horizontal_padding'),
+        right: $r('app.float.user_side_bar_horizontal_padding'),
+      })
+      .backgroundColor($r('app.color.user_side_bar_container_background_color'))
       this.customContent()
     }
     .showSideBar(this.show)

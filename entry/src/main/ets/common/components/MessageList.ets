@@ -9,38 +9,40 @@ export struct MessageList {
 
   @Builder MessageBubble(message: IMessage, isLeft: boolean) {
     Flex({ direction: isLeft ? FlexDirection.Row : FlexDirection.RowReverse }) {
-      // 用户头像
       Image(message.from.avatarUrl)
-        .width('120px')
-        .height('120px')
-        .margin({ left: '10px', right: '10px' })
-        .borderRadius(50)
+        .width($r('app.float.chat_window_avatar_size'))
+        .height($r('app.float.chat_window_avatar_size'))
+        .margin({
+          left: $r('app.float.chat_window_avatar_margin_left'),
+          right: $r('app.float.chat_window_avatar_margin_right'),
+        })
+        .borderRadius($r('app.float.chat_window_avatar_border_radius'))
+        .flexShrink(0)
 
-      Flex({ direction: isLeft ? FlexDirection.Row : FlexDirection.RowReverse, justifyContent: FlexAlign.Start }) {
-        // 文本消息
-        Text(message.content)
-          .fontSize('14fp')
-          .backgroundColor(isLeft ? '#cccccc' : '#ff6c8bef')
-          .padding(10)
-          .borderRadius(10)
-          .margin(isLeft ? { right: '140px' } : { left: '140px'})
-      }
-    }.margin({ top: '20px', bottom: '20px' })
+      Text(message.content)
+        .fontSize($r('app.float.normal_text_size'))
+        .backgroundColor(isLeft ? $r('app.color.chat_window_message_left_color') : $r('app.color.chat_window_message_right_color'))
+        .padding($r('app.float.chat_window_message_padding'))
+        .borderRadius($r('app.float.chat_window_message_border_radius'))
+        .flexBasis('auto')
+        .constraintSize({ maxWidth: $r('app.float.chat_window_message_max_width') })
+    }
+    .margin({
+      top: $r('app.float.chat_window_message_bubble_margin_top'),
+      bottom: $r('app.float.chat_window_message_bubble_margin_bottom'),
+    })
   }
 
   build() {
-    Flex({
-      direction: FlexDirection.ColumnReverse
-    }) {
-      List({ scroller: this.listScroller }) {
-        ForEach(this.messages, (message: IMessage) => {
-          ListItem() {
-            this.MessageBubble(message, message.from.id !== this.user.id);
-          }
-        }, (message: IMessage) => message.id + '')
-      }
+    List({ scroller: this.listScroller }) {
+      ForEach(this.messages, (message: IMessage) => {
+        ListItem() {
+          this.MessageBubble(message, message.from.id !== this.user.id);
+        }
+      }, (message: IMessage) => message.id + '')
     }
     .width('100%')
-    .backgroundColor('#F1F3F5')
+    .height('100%')
+    .backgroundColor($r('app.color.container_background_color'))
   }
 }
