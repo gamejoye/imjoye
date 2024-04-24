@@ -1,6 +1,5 @@
 import { IUser } from '../types/User.type';
 import { IChatChannel } from '../types/ChatChannel.type';
-import { pickChatroomName } from '../utils/pickChatRoomName';
 import router from '@ohos.router';
 
 @Component
@@ -92,14 +91,14 @@ export struct ChatChannelTab {
                     badgeColor: $r('app.color.red_badge_color')
                   }
                 }) {
-                  Image($r('app.media.logo'))
+                  Image(chatChannel.chatroom.avatarUrl)
                     .width($r('app.float.chat_channel_chat_room_avatar_size'))
                     .height($r('app.float.chat_channel_chat_room_avatar_size'))
                     .borderRadius($r('app.float.chat_channel_avatar_border_radius'))
                 }
 
                 Column() {
-                  Text(pickChatroomName(chatChannel.chatroom))
+                  Text(chatChannel.chatroom.name)
                     .width('100%')
                     .height('50%')
                     .fontSize($r('app.float.big_text_size'))

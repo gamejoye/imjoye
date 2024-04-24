@@ -132,6 +132,11 @@ class RdbHelper implements IRdbHelper {
       length: 1024,
       nullable: false,
     }, {
+      name: 'avatarUrl',
+      type: 'VARCHAR',
+      length: 255,
+      nullable: true,
+    }, {
       name: 'createTime',
       type: 'DATETIME',
       nullable: false,

@@ -3,7 +3,6 @@ import emitter from '@ohos.events.emitter';
 import { fetchMessages, createMessage } from '../api/httpApi';
 import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
-import { pickChatroomName } from '../common/utils/pickChatRoomName';
 import { MessageList } from '../common/components/MessageList';
 import { clientChatroomService } from '../common/database/rdb/services';
 import { getCurrentDatetime } from '../common/utils/datetime';
@@ -73,7 +72,7 @@ struct ChatWindow {
     Flex({
       direction: FlexDirection.Column
     }) {
-      Text(pickChatroomName(chatroom))
+      Text(chatroom.name)
         .width('100%')
         .height('50%')
         .fontSize($r('app.float.big_text_size'))

@@ -6,6 +6,7 @@ import { CLIENT_CHATROOM } from '../../../constants/databaseTables';
 import { IChatroom } from '../../../types/Chatroom.type';
 import emitter from '@ohos.events.emitter';
 import { EmitterEvent } from '../../../constants/emitterEvent';
+import { ChatroomType } from '../../../constants/chatroomType';
 
 class ChatroomService implements IChatroomService {
   async updateLatestVisitTime(chatroom: IChatroom, visitTime: string): Promise<ClientChatroom> {
@@ -56,8 +57,9 @@ class ChatroomService implements IChatroomService {
   private resultToClientChatroom(result: relationStore.ResultSet): ClientChatroom {
     const clientChatroom: ClientChatroom = {
       id: result.getLong(result.getColumnIndex('id')),
-      type: result.getString(result.getColumnIndex('type')) as ('SINGLE' | 'MULTIPLE'),
+      type: result.getString(result.getColumnIndex('type')) as ChatroomType,
       name: result.getString(result.getColumnIndex('name')),
+      avatarUrl: result.getString(result.getColumnIndex('avatarUrl')),
       createTime: result.getString(result.getColumnIndex('createTime')),
       latestVisitTime: result.getString(result.getColumnIndex('latestVisitTime')),
     };

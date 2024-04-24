@@ -1,5 +1,4 @@
 import { IChatChannel } from '../types/ChatChannel.type';
-import { IChatroom } from '../types/Chatroom.type';
 import { ClientChatroom } from '../views/ClientChatroom';
 
 export class Adapter {
@@ -27,6 +26,7 @@ export class ClientChatroomAdapter {
       id: this.value.chatroom.id,
       type: this.value.chatroom.type,
       name: this.value.chatroom.name,
+      avatarUrl: this.value.chatroom.avatarUrl,
       createTime: this.value.chatroom.createTime,
       latestVisitTime: this.value.latestVisitTime,
     }
