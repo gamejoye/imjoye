@@ -20,36 +20,47 @@
 ## 部分功能效果图
 
 - 登录界面
+
 ![登录](./screenshots/login.jpg)
 
 - 登录等待界面
+
 ![登录等待](./screenshots/login-loading.jpg)
 
 - 注册界面
+
 ![注册](./screenshots/register.jpg)
 
 - 注册等待界面
+
 ![注册等待](./screenshots/register-loading.jpg)
 
 - 相册选取头像界面
+
 ![相册选取头像](./screenshots/register-pick-avatar.jpg)
 
 - 主页-聊天室列表界面
+
 ![主页-聊天室列表](./screenshots/homepage-chat-tab.jpg)
 
 - 主页-好友列表界面
+
 ![主页-好友列表](./screenshots/homepage-friend-tab.jpg)
 
 - 聊天界面
+
 ![聊天](./screenshots/chat-window.jpg)
 
 - 用户信息界面
+
 ![用户信息](./screenshots/user-info.jpg)
 
 - 用户登录对话框界面
+
 ![用户对话框](./screenshots/user-info-dialog.jpg)
 
 - 好友信息界面
+
 ![好友信息](./screenshots/friend-info-detail.jpg)
 
 ### 后端设置
