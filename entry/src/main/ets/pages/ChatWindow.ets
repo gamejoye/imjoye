@@ -12,7 +12,6 @@ import promptAction from '@ohos.promptAction';
 import { IChatroom } from '../common/types/Chatroom.type';
 import { IEmitterMessage } from '../common/types/EmitterMessage.type';
 
-
 function messageSorter(message1: IMessage, message2: IMessage) {
   const date1 = new Date(message1.createTime);
   const date2 = new Date(message2.createTime);
@@ -22,7 +21,7 @@ function messageSorter(message1: IMessage, message2: IMessage) {
 @Entry
 @Component
 struct ChatWindow {
-  @State messages: IMessage[] = [];
+  @State @Watch('onMessageListUpdated') messages: IMessage[] = [];
   @State draft: string = '';
   @StorageLink('user') user: IUser = null;
   private listScroller: Scroller = new Scroller();
@@ -57,6 +56,10 @@ struct ChatWindow {
     router.back({
       url: 'pages/HomePage',
     })
+  }
+
+  onMessageListUpdated() {
+    this.listScroller.scrollToIndex(this.messages.length - 1);
   }
 
   async handleOnMessageSubmit() {
