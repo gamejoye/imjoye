@@ -22,6 +22,7 @@ export async function fetchMessages(
 }
 
 type CreateMessageParams = {
+  temporaryId: number;
   content: string;
   userId: number;
   chatroomId: number;
@@ -39,6 +40,7 @@ export async function createMessage(
       expectDataType: http.HttpDataType.STRING,
     },
     extraData: {
+      temporaryId: params.temporaryId,
       content: params.content,
       from: {
         id: params.userId,
