@@ -93,6 +93,18 @@
       "value": "5vp"
     },
     {
+      "name": "chat_window_message_fail_button_size",
+      "value": "25vp"
+    },
+    {
+      "name": "chat_window_message_fail_button_svg_size",
+      "value": "15"
+    },
+    {
+      "name": "chat_window_message_fail_button_horizontal_margin",
+      "value": "5vp"
+    },
+    {
       "name": "chat_window_message_max_width",
       "value": "250vp"
     },
@@ -351,6 +363,6 @@
     {
       "name": "friend_info_detail_horizontal_padding",
       "value": "10vp"
-    },
+    }
   ]
 }
