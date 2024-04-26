@@ -11,17 +11,19 @@ import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
 import { IChatroom } from '../common/types/Chatroom.type';
 import { IEmitterMessage } from '../common/types/EmitterMessage.type';
+import { IMessageState } from '../common/types/MessageState.type';
+import { getMessageTemporaryId } from '../common/utils';
 
-function messageSorter(message1: IMessage, message2: IMessage) {
-  const date1 = new Date(message1.createTime);
-  const date2 = new Date(message2.createTime);
+function messageStateSorter(messageState1: IMessageState, messageState2: IMessageState) {
+  const date1 = new Date(messageState1.message.createTime);
+  const date2 = new Date(messageState2.message.createTime);
   return date1.getTime() - date2.getTime();
 }
 
 @Entry
 @Component
 struct ChatWindow {
-  @State @Watch('onMessageListUpdated') messages: IMessage[] = [];
+  @State @Watch('onMessageListUpdated') messageStates: Array<IMessageState> = [];
   @State draft: string = '';
   @StorageLink('user') user: IUser = null;
   private listScroller: Scroller = new Scroller();
@@ -32,7 +34,23 @@ struct ChatWindow {
       eventId: EmitterEvent.NEW_MESSAGE,
     }, ({ data }: { data: IEmitterMessage }) => {
       const message: IMessage = JSON.parse(data.plainText);
-      this.messages = [...this.messages, message].sort(messageSorter);
+      const index = this.messageStates.findIndex((mss) => (
+        typeof mss.message.temporaryId === 'number' &&
+        mss.message.temporaryId === message.temporaryId)
+      );
+      if (index === -1) {
+        const messageState: IMessageState = {
+          status: 'success',
+          message
+        };
+        this.messageStates.push(messageState);
+        this.messageStates.sort(messageStateSorter);
+      } else {
+        this.messageStates[index] = {
+          message: message,
+          status: 'success',
+        }
+      }
     })
   }
 
@@ -44,12 +62,20 @@ struct ChatWindow {
         duration: 1000,
       })
     }
-    this.messages = messages.sort(messageSorter);
+    this.messageStates = messages
+      .map((message) => {
+        const mss: IMessageState = {
+          status: 'success',
+          message,
+        };
+        return mss;
+      })
+      .sort(messageStateSorter);
   }
 
   aboutToDisappear() {
     emitter.off(EmitterEvent.NEW_MESSAGE);
-    clientChatroomService.updateLatestVisitTime(this.chatroom, getCurrentDatetime())
+    clientChatroomService.updateLatestVisitTime(this.chatroom, getCurrentDatetime());
   }
 
   handleOnBack() {
@@ -59,16 +85,32 @@ struct ChatWindow {
   }
 
   onMessageListUpdated() {
-    this.listScroller.scrollToIndex(this.messages.length - 1);
+    this.listScroller.scrollToIndex(this.messageStates.length - 1);
   }
 
   async handleOnMessageSubmit() {
-    await createMessage({
+    const temporaryId = getMessageTemporaryId(this.messageStates);
+    const partialMessage: IMessage = {
+      id: null as any,
+      temporaryId,
+      chatroom: this.chatroom,
+      from: this.user,
       content: this.draft,
-      userId: this.user.id,
-      chatroomId: this.chatroom.id,
-    })
+      createTime: getCurrentDatetime(),
+    };
+    const messageState: IMessageState = {
+      status: 'loading',
+      message: partialMessage,
+    };
     this.draft = '';
+    this.messageStates.push(messageState);
+    this.messageStates.sort(messageStateSorter);
+    createMessage({
+      temporaryId,
+      content: partialMessage.content,
+      userId: partialMessage.from.id,
+      chatroomId: partialMessage.chatroom.id,
+    });
   }
 
   @Builder ChatroomStatusBuild(chatroom: IChatroom) {
@@ -116,7 +158,7 @@ struct ChatWindow {
       .flexShrink(0)
 
       MessageList({
-        messages: $messages,
+        messages: $messageStates,
         listScroller: this.listScroller
       })
 
