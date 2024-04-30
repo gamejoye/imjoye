@@ -1,7 +1,7 @@
-import { IRdbHelper } from './interface/RdbHelper.interface';
+import { IRdbHelper } from './RdbHelper.interface';
 import relationStore from '@ohos.data.relationalStore';
 import { TableColumn } from '../../types/TableColumn.type';
-import { CLIENT_CHATROOM } from '../../constants/databaseTables';
+import { CLIENT_CHATROOM, CLIENT_USER, CLIENT_USER_CHATROOM } from '../../constants/databaseTables';
 
 class RdbHelper implements IRdbHelper {
   private databaseName: string;
@@ -16,25 +16,17 @@ class RdbHelper implements IRdbHelper {
     return this.databaseName;
   }
 
-  initRdb(context: Context): Promise<IRdbHelper> {
+  async initRdb(context: Context): Promise<IRdbHelper> {
     this.config = {
       name: this.databaseName,
       securityLevel: relationStore.SecurityLevel.S1,
     };
-    return new Promise((resolve, reject) => {
-      relationStore
-        .getRdbStore(context, this.config)
-        .then((store) => {
-          this.store = store;
-          this.createClientChatroomTable();
-        })
-        .then(() => {
-          resolve(this);
-        })
-        .catch((reason) => {
-          reject(reason);
-        })
-    })
+    const store = await relationStore.getRdbStore(context, this.config);
+    this.store = store;
+    await this.createClientChatroomTable();
+    await this.createClientUserTable();
+    await this.createClientUserChatroomTable();
+    return this;
   }
 
   executeSql(sql: string): Promise<void> {
@@ -108,28 +100,40 @@ class RdbHelper implements IRdbHelper {
     return this.store.beginTransaction();
   }
 
+  async performTransaction<T>(actions: () => Promise<T>): Promise<T> {
+    try {
+      this.transaction();
+      const result = await actions();
+      this.commit();
+      return result;
+    } catch (error) {
+      console.log('Transaction error:', error);
+      this.rollback();
+      throw error;
+    }
+  }
+
   commit(): void {
     console.log(`transaction commit`);
     return this.store.commit();
   }
 
+  rollback(): void {
+    console.log('rollback');
+    return this.store.rollBack();
+  }
+
   private createClientChatroomTable(): Promise<void> {
-    console.log('create clientchatroom table');
+    console.log(`create ${CLIENT_CHATROOM} table`);
     return this.createTable(CLIENT_CHATROOM, [{
       name: 'id',
       type: 'INTEGER',
       nullable: false,
       primary: true,
-      autoincrement: true,
     }, {
       name: 'type',
       type: 'VARCHAR',
       length: 128,
-      nullable: false,
-    }, {
-      name: 'name',
-      type: 'VARCHAR',
-      length: 1024,
       nullable: false,
     }, {
       name: 'avatarUrl',
@@ -137,14 +141,71 @@ class RdbHelper implements IRdbHelper {
       length: 255,
       nullable: true,
     }, {
+      name: 'name',
+      type: 'VARCHAR',
+      length: 1024,
+      nullable: false,
+    }, {
       name: 'createTime',
       type: 'DATETIME',
       nullable: false,
+    }]);
+  }
+
+  private createClientUserTable(): Promise<void> {
+    console.log(`create ${CLIENT_USER} table`);
+    return this.createTable(CLIENT_USER, [{
+      name: 'id',
+      type: 'INTEGER',
+      nullable: false,
+      primary: true,
+      autoincrement: true,
+    }, {
+      name: 'username',
+      type: 'VARCHAR',
+      length: 255,
+      nullable: false,
+    }, {
+      name: 'email',
+      type: 'VARCHAR',
+      length: 255,
+      nullable: false,
+    }, {
+      name: 'avatarUrl',
+      type: 'VARCHAR',
+      length: 255,
+      nullable: false,
+    }, {
+      name: 'description',
+      type: 'VARCHAR',
+      length: 4096,
+      nullable: true,
+    }, {
+      name: 'createTime',
+      type: 'DATETIME',
+      nullable: false,
+    }]);
+  }
+
+  private createClientUserChatroomTable(): Promise<void> {
+    console.log(`create ${CLIENT_USER_CHATROOM} table`);
+    return this.createTable(CLIENT_USER_CHATROOM, [{
+      name: 'userId',
+      type: 'INTEGER',
+      nullable: false,
+    }, {
+      name: 'chatroomId',
+      type: 'INTEGER',
+      nullable: false,
+    }, {
+      name: 'joinTime',
+      type: 'DATETIME',
+      nullable: true, // TODO nullable: false
     }, {
       name: 'latestVisitTime',
       type: 'DATETIME',
       nullable: true,
-    }])
+    }]);
   }
 }
 

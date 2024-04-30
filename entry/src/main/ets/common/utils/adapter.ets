@@ -1,5 +1,5 @@
 import { IChatChannel } from '../types/ChatChannel.type';
-import { ClientChatroom } from '../views/ClientChatroom';
+import { ClientChatroom } from '../database/rdb/views/ClientChatroom';
 
 export class Adapter {
   private static value: unknown;

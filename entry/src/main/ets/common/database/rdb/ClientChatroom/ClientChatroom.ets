@@ -4,6 +4,4 @@ export class ClientChatroom {
   avatarUrl: string | null;
   name: string;
   createTime: string;
-
-  latestVisitTime: string;
 }

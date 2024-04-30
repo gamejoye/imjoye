@@ -1,5 +1,5 @@
 import relationStore from '@ohos.data.relationalStore';
-import { TableColumn } from '../../../types/TableColumn.type';
+import { TableColumn } from '../../types/TableColumn.type';
 
 export interface IRdbHelper {
   getDbName(): string;
@@ -23,4 +23,12 @@ export interface IRdbHelper {
   queryBySql(sql: string, bindArgs?: Array<relationStore.ValueType>): Promise<relationStore.ResultSet>;
 
   delete(rdbPredicates: relationStore.RdbPredicates): Promise<number>;
+
+  transaction(): void;
+
+  performTransaction<T>(actions: () => Promise<T>): Promise<T>;
+
+  commit(): void;
+
+  rollback(): void;
 }
