@@ -28,7 +28,6 @@ class ClientUserService implements IClientUserService {
     if (!clientUserResult.goToFirstRow()) {
       throw new Error('save ClientUser fail');
     }
-    return this.resultToClientUser(clientUserResult);
   }
 
   private getClientUserBucket(user: IUser): relationStore.ValuesBucket {
