@@ -4,13 +4,14 @@ import { fetchMessages, createMessage } from '../api/httpApi';
 import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
 import { MessageList } from '../common/components/MessageList';
-import { clientChatroomService } from '../common/database/rdb/services';
+import { ClientChatroomService } from '../common/database/rdb/ClientChatroom';
+import { ClientUserChatroomService } from '../common/database/rdb/ClientUserChatroom';
 import { getCurrentDatetime } from '../common/utils/datetime';
 import { EmitterEvent } from '../common/constants/emitterEvent';
 import { isSuccess } from '../common/utils/http';
 import promptAction from '@ohos.promptAction';
 import { IChatroom } from '../common/types/Chatroom.type';
-import { IEmitterMessage } from '../common/types/EmitterMessage.type';
+import { IClientChatroomUpdate, IEmitterMessage } from '../common/types/EmitterMessage.type';
 import { IMessageState } from '../common/types/MessageState.type';
 import { getMessageTemporaryId } from '../common/utils';
 
@@ -23,7 +24,7 @@ function messageStateSorter(messageState1: IMessageState, messageState2: IMessag
 @Entry
 @Component
 struct ChatWindow {
-  @State @Watch('onMessageListUpdated') messageStates: Array<IMessageState> = [];
+  @State @Watch('onMessageListUpdate') messageStates: Array<IMessageState> = [];
   @State draft: string = '';
   @StorageLink('user') user: IUser = null;
   private listScroller: Scroller = new Scroller();
@@ -34,6 +35,8 @@ struct ChatWindow {
       eventId: EmitterEvent.NEW_MESSAGE,
     }, ({ data }: { data: IEmitterMessage }) => {
       const message: IMessage = JSON.parse(data.plainText);
+      if (message.chatroom.id !== this.chatroom.id) return;
+
       const index = this.messageStates.findIndex((mss) => (
         typeof mss.message.temporaryId === 'number' &&
         mss.message.temporaryId === message.temporaryId)
@@ -51,7 +54,7 @@ struct ChatWindow {
           status: 'success',
         }
       }
-    })
+    });
   }
 
   async onPageShow() {
@@ -73,9 +76,26 @@ struct ChatWindow {
       .sort(messageStateSorter);
   }
 
-  aboutToDisappear() {
+  async aboutToDisappear() {
     emitter.off(EmitterEvent.NEW_MESSAGE);
-    clientChatroomService.updateLatestVisitTime(this.chatroom, getCurrentDatetime());
+    const latestVisitTime = getCurrentDatetime();
+    await ClientUserChatroomService.save({
+      userId: this.user.id,
+      chatroomId: this.chatroom.id,
+      latestVisitTime,
+    });
+    const payload: IClientChatroomUpdate = {
+      id: this.chatroom.id,
+      timestamp: latestVisitTime,
+    };
+    const emitterData: IEmitterMessage = {
+      plainText: JSON.stringify(payload),
+    };
+    emitter.emit({
+      eventId: EmitterEvent.CLIENT_CHATROOM_UPDATE,
+    }, {
+      data: emitterData,
+    });
   }
 
   handleOnBack() {
@@ -84,7 +104,7 @@ struct ChatWindow {
     })
   }
 
-  onMessageListUpdated() {
+  onMessageListUpdate() {
     this.listScroller.scrollToIndex(this.messageStates.length - 1);
   }
 
