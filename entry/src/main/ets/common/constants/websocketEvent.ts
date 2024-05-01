@@ -10,4 +10,6 @@ export enum WebSocketEvent {
   MESSAGE_ACK_SYN = 9,        // [用户]对于[服务器]发送的于[用户发送消息事件的确认]的回应
   MESSAGE_NOTIFY_SYN = 10,    // 通知用户有新消息
   MESSAGE_NOTIFY_ACK = 11,    // 用户对于有新消息的确认
+  PING = 12,                  // 客户端心跳发送包
+  PONG = 13,                  // 服务器端心跳响应包
 }
