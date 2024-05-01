@@ -1,72 +1,53 @@
 import webSocket from '@ohos.net.webSocket';
-import emitter from '@ohos.events.emitter';
 import { WebSocketEvent } from '../../common/constants/websocketEvent';
 import { IMessage } from '../../common/types/Message.type';
 import { IWebSocketMessage } from '../../common/types/WebSocketMessage.type';
 import { AUTHORIZATION } from '../../common/constants/websocketHeaders';
 import { getUserInfo } from '../../common/utils/userInfoPreference';
 import { AUTHENTICATION_TOKEN } from '../../common/constants/userInforPreferences';
-import { EmitterEvent } from '../../common/constants/emitterEvent';
-import { IEmitterMessage } from '../../common/types/EmitterMessage.type';
+import { IWebsocketHandler } from './handler/WebsocketHandler.interface';
+import { MessageNotificationManager } from '../../notification';
 
 export class WebSocketService {
   ws: webSocket.WebSocket;
+  websocketHandler: IWebsocketHandler;
 
-  constructor() {
-    this.ws = null;
+  constructor(websocketHandler: IWebsocketHandler) {
+    this.websocketHandler = websocketHandler;
+    this.ws = webSocket.createWebSocket();
   }
 
-   async start() {
-    this.ws = webSocket.createWebSocket();
-    const target : SubscribedAbstractProperty<string> = AppStorage.Prop('webSocketUrl');
+  async start() {
+    const target: SubscribedAbstractProperty<string> = AppStorage.Prop('webSocketUrl');
+
     this.ws.on('open', (err, value) => {
-      console.log("on open, status:" + JSON.stringify(value));
+      console.log('********* open', JSON.stringify(err), JSON.stringify(value));
+      this.websocketHandler.handleOnOpen(this.ws);
     });
 
+    this.ws.on('close', (err, value) => {
+      console.log('********* close', JSON.stringify(err), JSON.stringify(value));
+      this.websocketHandler.handleOnClose(this.ws);
+    })
+
     this.ws.on('message', async (err, value) => {
-      if(typeof value !== 'string') {
+      if (typeof value !== 'string') {
         value = String.fromCharCode.apply(null, new Uint16Array(value));
       }
       const result: IWebSocketMessage<unknown> = JSON.parse(value as string);
       switch (result.event) {
         case WebSocketEvent.MESSAGE_ACK: {
           const message = result.payload as IMessage;
-          const emitterData: IEmitterMessage = {
-            plainText: JSON.stringify(message)
-          };
-          emitter.emit({
-            eventId: EmitterEvent.NEW_MESSAGE,
-          }, {
-            data: emitterData,
-          });
-
-          const messageAckSyn: IWebSocketMessage<IMessage> = {
-            event: WebSocketEvent.MESSAGE_ACK_SYN,
-            payload: message,
-          };
-
-          // TODO auto retry
-          this.ws.send(JSON.stringify(messageAckSyn));
+          this.websocketHandler.handleOnMessageAck(this.ws, message);
           break;
         }
         case WebSocketEvent.MESSAGE_NOTIFY_SYN: {
           const message = result.payload as IMessage;
-          const emitterData: IEmitterMessage = {
-            plainText: JSON.stringify(message),
-          };
-          emitter.emit({
-            eventId: EmitterEvent.NEW_MESSAGE,
-          }, {
-            data: emitterData,
-          });
-
-          const notifyAck: IWebSocketMessage<IMessage> = {
-            event: WebSocketEvent.MESSAGE_NOTIFY_ACK,
-            payload: message,
-          };
-
-          // TODO auto retry
-          this.ws.send(JSON.stringify(notifyAck));
+          this.websocketHandler.handleOnMessageNotifySyn(this.ws, message);
+          break;
+        }
+        case WebSocketEvent.PING: {
+          this.websocketHandler.handleOnPong(this.ws);
           break;
         }
         default: {
@@ -76,17 +57,14 @@ export class WebSocketService {
     });
 
     this.ws.on('error', (err) => {
-      console.log("on error, error:" + JSON.stringify(err));
+      this.websocketHandler.handleOnError(this.ws, err);
     });
 
     const userInfo = await getUserInfo();
     this.ws.connect(
       target.get(),
       {
-        header:
-        {
-          [AUTHORIZATION]: userInfo[AUTHENTICATION_TOKEN],
-        }
+        header: { [AUTHORIZATION]: userInfo[AUTHENTICATION_TOKEN] }
       },
       (err, value) => {
         if (!err) {
@@ -94,10 +72,12 @@ export class WebSocketService {
         } else {
           console.log("Connection failed. Err:" + JSON.stringify(err));
         }
-    });
+      }
+    );
   }
 
   stop() {
+    console.log('STOP STOP STOP STOP ************* ');
     this.ws.close();
   }
 }
