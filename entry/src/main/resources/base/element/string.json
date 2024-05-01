@@ -19,6 +19,14 @@
     {
       "name": "read_media_permission_reason",
       "value": "Used to access Local media resource"
+    },
+    {
+      "name": "keep_live_work_extension_ability_label",
+      "value": "Background delay keeping alive"
+    },
+    {
+      "name": "keep_live_work_extension_ability_desc",
+      "value": "Used to keep websocket connect"
     }
   ]
 }

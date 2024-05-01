@@ -30,7 +30,16 @@
               "action.system.home"
             ]
           }
-        ]
+        ],
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "KeepLiveWorkSchedulerExtensionAbility",
+        "srcEntry": "./ets/extensionability/KeepLiveWorkExtensionAbility.ets",
+        "label": "$string:keep_live_work_extension_ability_label",
+        "description": "$string:keep_live_work_extension_ability_desc",
+        "type": "workScheduler"
       }
     ],
     "requestPermissions": [
@@ -47,7 +56,7 @@
       {
         "name": "ohos.permission.READ_MEDIA",
         "reason": "$string:read_media_permission_reason"
-      }
+      },
     ]
   }
 }

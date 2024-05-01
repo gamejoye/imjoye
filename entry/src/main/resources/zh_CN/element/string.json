@@ -19,6 +19,14 @@
     {
       "name": "read_media_permission_reason",
       "value": "访问本地媒体文件"
+    },
+    {
+      "name": "keep_live_work_extension_ability_label",
+      "value": "后台延迟保活"
+    },
+    {
+      "name": "keep_live_work_extension_ability_desc",
+      "value": "保证websocket正常保活连接"
     }
   ]
 }
