@@ -42,3 +42,24 @@ export async function fetchChatroomByFriendId(
   });
   return JSON.parse(response.result as string);
 }
+
+type FetchChatroomSummaryParams = {
+  id: number,
+  timestamp: string,
+}
+
+export async function fetchChatroomSummary(
+    params: FetchChatroomSummaryParams
+): Promise<IResponse<IChatChannel>> {
+  const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
+  const { id, timestamp } = params;
+  const encodedTimestamp = encodeURIComponent(timestamp);
+  const response = await HttpHelper.request(`${apiUrl.get()}chatrooms/summaries/${id}?timestamp=${encodedTimestamp}`, {
+    method: http.RequestMethod.GET,
+    header: {
+      'Content-Type': 'application/json',
+      expectDataType: http.HttpDataType.STRING,
+    },
+  });
+  return JSON.parse(response.result as string);
+}
