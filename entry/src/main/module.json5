@@ -56,7 +56,7 @@
       {
         "name": "ohos.permission.READ_MEDIA",
         "reason": "$string:read_media_permission_reason"
-      },
+      }
     ]
   }
 }
