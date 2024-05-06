@@ -51,6 +51,9 @@ class ClientUserService implements IClientUserService {
       description: result.getString(result.getColumnIndex('description')),
       createTime: result.getString(result.getColumnIndex('createTime')),
     };
+    if (result.isColumnNull(result.getColumnIndex('description'))) {
+      clientUser.description = null;
+    }
     return clientUser;
   }
 }

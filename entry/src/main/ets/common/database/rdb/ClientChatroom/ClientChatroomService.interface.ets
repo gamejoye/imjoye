@@ -5,7 +5,7 @@ import { ClientChatroom } from './ClientChatroom';
 export interface IClientChatroomService {
   getChatChannels(user: IUser): Promise<Array<IChatChannel>>;
 
-  save(user: IUser, channels: Array<IChatChannel>): Promise<Array<ClientChatroom>>;
+  save(user: IUser, channels: Array<IChatChannel>): Promise<void>;
 
-  update(user: IUser, channel: IChatChannel): Promise<ClientChatroom>;
+  update(user: IUser, channel: IChatChannel): Promise<void>;
 }

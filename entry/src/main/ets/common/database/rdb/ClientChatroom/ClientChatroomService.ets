@@ -2,11 +2,10 @@ import { IClientChatroomService } from './ClientChatroomService.interface';
 import relationStore from '@ohos.data.relationalStore';
 import RdbHelper from '../RdbHelper';
 import { CLIENT_CHATROOM, CLIENT_USER_CHATROOM } from '../../../constants/databaseTables';
-import { IChatroom } from '../../../types/Chatroom.type';
 import { ChatroomType } from '../../../constants/chatroomType';
 import { IUser } from '../../../types/User.type';
 import { IChatChannel } from '../../../types/ChatChannel.type';
-import { ChatChannelAdapter } from '../../../utils';
+import { ChatChannelAdapter, ClientChatroomAdapter } from '../../../utils';
 import { ClientUserChatroomService } from '../ClientUserChatroom/ClientUserChatroomService';
 import { ClientChatroom } from './ClientChatroom';
 
@@ -20,17 +19,19 @@ class ClientChatroomService implements IClientChatroomService {
         if (!userChatroom) {
           return null;
         }
-        const channel = (new ChatChannelAdapter(clientChatroom, userChatroom)).adapt();
+        const channel = (new ChatChannelAdapter(clientChatroom, userChatroom)).getChatChannel();
         return channel;
       })
     )).filter((channel) => channel !== null);
     return channels;
   }
 
-  async save(user: IUser, channels: Array<IChatChannel>): Promise<Array<ClientChatroom>> {
+  async save(user: IUser, channels: Array<IChatChannel>): Promise<void> {
     await RdbHelper.performTransaction<void>(async () => {
       await Promise.all(channels.map(async (channel) => {
-        const { chatroom } = channel;
+        const adapter = (new ClientChatroomAdapter(user, channel));
+        const chatroom = adapter.getClientChatroom();
+        const userChatroom = adapter.getClientUserChatroom();
         /**
          * 1. 处理 ClientChatroom
          */
@@ -46,31 +47,16 @@ class ClientChatroomService implements IClientChatroomService {
         /**
          * 2. 处理 UserChatroom
          */
-        await ClientUserChatroomService.save({
-          userId: user.id,
-          chatroomId: chatroom.id,
-          joinTime: null,
-          latestVisitTime: channel.latestVisitTime,
-        });
+        await ClientUserChatroomService.save(userChatroom);
       }));
     });
-
-    const clientChatrooms = await Promise.all(channels.map(
-      async (channel) => {
-        const { chatroom } = channel;
-        const predicates = new relationStore.RdbPredicates(CLIENT_CHATROOM);
-        predicates.equalTo('id', chatroom.id);
-        const result = await RdbHelper.query(predicates);
-        result.goToFirstRow();
-        return this.resultToClientChatroom(result);
-      })
-    );
-    return clientChatrooms;
   }
 
-  async update(user: IUser, channel: IChatChannel): Promise<ClientChatroom> {
-    const { chatroom } = channel;
-    return RdbHelper.performTransaction<ClientChatroom>(async () => {
+  async update(user: IUser, channel: IChatChannel): Promise<void> {
+    const adapter = new ClientChatroomAdapter(user, channel);
+    const chatroom = adapter.getClientChatroom();
+    const userChatroom = adapter.getClientUserChatroom();
+    return RdbHelper.performTransaction<void>(async () => {
       const valueBucket = this.getClientChatroomBucket(chatroom);
       const predicates = new relationStore.RdbPredicates(CLIENT_CHATROOM);
       predicates.equalTo('id', chatroom.id);
@@ -80,17 +66,7 @@ class ClientChatroomService implements IClientChatroomService {
       } else {
         await RdbHelper.insert(CLIENT_CHATROOM, [valueBucket]);
       }
-      ClientUserChatroomService.save({
-        userId: user.id,
-        chatroomId: chatroom.id,
-        joinTime: null,
-        latestVisitTime: channel.latestVisitTime,
-      })
-      const clientResult = await RdbHelper.query(predicates);
-      if (!clientResult.goToFirstRow()) {
-        throw new Error('update ClientChatroom fail');
-      }
-      return this.resultToClientChatroom(clientResult);
+      ClientUserChatroomService.save(userChatroom)
     });
   }
 
@@ -115,7 +91,7 @@ class ClientChatroomService implements IClientChatroomService {
     return clientChatrooms;
   }
 
-  private getClientChatroomBucket(chatroom: IChatroom): relationStore.ValuesBucket {
+  private getClientChatroomBucket(chatroom: ClientChatroom): relationStore.ValuesBucket {
     const valueBucket: ClientChatroom = {
       'id': chatroom.id,
       'type': chatroom.type,
@@ -134,6 +110,12 @@ class ClientChatroomService implements IClientChatroomService {
       avatarUrl: result.getString(result.getColumnIndex('avatarUrl')),
       createTime: result.getString(result.getColumnIndex('createTime')),
     };
+    if (result.isColumnNull(result.getColumnIndex('name'))) {
+      clientChatroom.name = null;
+    }
+    if (result.isColumnNull(result.getColumnIndex('avatarUrl'))) {
+      clientChatroom.avatarUrl = null;
+    }
     return clientChatroom;
   }
 }

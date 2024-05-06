@@ -45,12 +45,6 @@ class ClientUserChatroomService implements IClientUserChatroomService {
       joinTime: result.getString(result.getColumnIndex('joinTime')),
       latestVisitTime: result.getString(result.getColumnIndex('latestVisitTime')),
     };
-    if (result.isColumnNull(result.getColumnIndex('joinTime'))) {
-      clientUserChatroom.joinTime = null;
-    }
-    if (result.isColumnNull(result.getColumnIndex('latestVisitTime'))) {
-      clientUserChatroom.latestVisitTime = null;
-    }
     return clientUserChatroom;
   }
 }
