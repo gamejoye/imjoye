@@ -1,5 +1,15 @@
-import abilityTest from './Ability.test'
+import ClientChatroomServiceTest from './unit/database/ClientChatroomService.test'
+import ClientUserServiceTest from './unit/database/ClientUserService.test'
+import adapterTest from './unit/util/adapter.test'
+import httpTest from './unit/util/http.test'
+import messageUtilTest from './unit/util/messageUtil.test'
+import userInfoPreferenceUtilTest from './unit/util/userInfoPreference.test'
 
 export default function testsuite() {
-  abilityTest()
+  ClientUserServiceTest()
+  ClientChatroomServiceTest()
+  messageUtilTest()
+  httpTest()
+  adapterTest()
+  userInfoPreferenceUtilTest()
 }
