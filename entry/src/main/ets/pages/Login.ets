@@ -5,7 +5,7 @@ import { IUser } from '../common/types/User.type';
 import promptAction from '@ohos.promptAction';
 import { isSuccess } from '../common/utils/http';
 import { AUTHENTICATION_TOKEN, USER_ID } from '../common/constants/userInforPreferences';
-import { storeUserInfo } from '../common/utils/userInfoPreference';
+import { UserInfoPreferenceUtil } from '../common/utils/userInfoPreference';
 
 @Entry
 @Component
@@ -13,13 +13,12 @@ struct Login {
   @State email: string = '';
   @State password: string = '';
   @State status: 'idle' | 'loading' | 'fail' | 'success' = 'idle';
-
   handleOnLogin = async () => {
-    if(this.email === '' || this.password === '') return;
+    if (this.email === '' || this.password === '') return;
 
     this.status = 'loading';
     const loginRes = await login({ email: this.email, password: this.password });
-    if(!isSuccess(loginRes.statusCode)) {
+    if (!isSuccess(loginRes.statusCode)) {
       promptAction.showToast({
         message: loginRes.message,
         duration: 1000,
@@ -29,10 +28,10 @@ struct Login {
     }
 
     const { id, token } = loginRes.data;
-    await storeUserInfo({ [AUTHENTICATION_TOKEN]: token, [USER_ID]: id });
+    await UserInfoPreferenceUtil.storeUserInfo(getContext(), { [AUTHENTICATION_TOKEN]: token, [USER_ID]: id });
 
     const fetchRes = await fetchUser(id);
-    if(!isSuccess(fetchRes.statusCode)) {
+    if (!isSuccess(fetchRes.statusCode)) {
       promptAction.showToast({
         message: fetchRes.message,
         duration: 1000,
@@ -48,7 +47,6 @@ struct Login {
 
     })
   }
-
   handleJumpToRegister = () => {
     if (this.status === 'loading') return;
     router.pushUrl({

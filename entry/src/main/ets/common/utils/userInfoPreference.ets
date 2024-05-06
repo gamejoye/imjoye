@@ -1,5 +1,4 @@
 import dataPreferences from '@ohos.data.preferences';
-import common from '@ohos.app.ability.common';
 import { AUTHENTICATION_TOKEN, USER_ID } from '../constants/userInforPreferences';
 
 export interface IUserInfoPreference {
@@ -7,22 +6,38 @@ export interface IUserInfoPreference {
   [USER_ID]: number;
 }
 
-export async function getUserInfo(): Promise<IUserInfoPreference> {
-  const preferences = await dataPreferences.getPreferences(getContext() as common.UIAbilityContext, 'userInfo');
-  const userInfo: IUserInfoPreference = {
-    authenticatedToken: await preferences.get(AUTHENTICATION_TOKEN, '') as string,
-    userId: await preferences.get(USER_ID, -1) as number,
+
+class UserInfoPreferenceUtil {
+  userInfo: string;
+
+  constructor() {
+    this.userInfo = 'userInfo';
   }
-  return userInfo;
+
+  async getUserInfo(context: Context): Promise<IUserInfoPreference> {
+    const preferences = await dataPreferences.getPreferences(context, 'userInfo');
+    const userInfo: IUserInfoPreference = {
+      authenticatedToken: await preferences.get(AUTHENTICATION_TOKEN, '') as string,
+      userId: await preferences.get(USER_ID, -1) as number,
+    }
+    return userInfo;
+  }
+
+  async storeUserInfo(context: Context, { authenticatedToken, userId }: IUserInfoPreference) {
+    const preferences = await dataPreferences.getPreferences(context, 'userInfo');
+    preferences.put(AUTHENTICATION_TOKEN, authenticatedToken);
+    preferences.put(USER_ID, userId);
+    preferences.flush();
+  }
+
+  async deleteUserInfo(context: Context) {
+    await dataPreferences.deletePreferences(context, 'userInfo');
+  }
 }
 
-export async function storeUserInfo({ authenticatedToken, userId }: IUserInfoPreference) {
-  const preferences = await dataPreferences.getPreferences(getContext() as common.UIAbilityContext, 'userInfo');
-  preferences.put(AUTHENTICATION_TOKEN, authenticatedToken);
-  preferences.put(USER_ID, userId);
-  preferences.flush();
-}
 
-export async function deleteUserInfo() {
-  await dataPreferences.deletePreferences(getContext() as common.UIAbilityContext, 'userInfo');
+const util = new UserInfoPreferenceUtil();
+
+export {
+  util as UserInfoPreferenceUtil
 }

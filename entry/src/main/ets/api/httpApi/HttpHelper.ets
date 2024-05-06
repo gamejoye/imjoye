@@ -1,13 +1,13 @@
 import http from '@ohos.net.http';
 import { AUTHENTICATION_TOKEN } from '../../common/constants/userInforPreferences';
-import { getUserInfo } from '../../common/utils/userInfoPreference';
+import { UserInfoPreferenceUtil } from '../../common/utils/userInfoPreference';
 
 class HttpHelper {
   async request(url: string, options: http.HttpRequestOptions) {
     const httpRequest = http.createHttp();
     let headers = options.header;
     if (!headers) headers = {};
-    const userInfo = await getUserInfo();
+    const userInfo = await UserInfoPreferenceUtil.getUserInfo(getContext());
     const token = userInfo[AUTHENTICATION_TOKEN];
     headers['Authorization'] = 'Bearer ' + token;
     options.header = headers;

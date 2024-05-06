@@ -3,10 +3,9 @@ import { WebSocketEvent } from '../../common/constants/websocketEvent';
 import { IMessage } from '../../common/types/Message.type';
 import { IWebSocketMessage } from '../../common/types/WebSocketMessage.type';
 import { AUTHORIZATION } from '../../common/constants/websocketHeaders';
-import { getUserInfo } from '../../common/utils/userInfoPreference';
+import { UserInfoPreferenceUtil } from '../../common/utils/userInfoPreference';
 import { AUTHENTICATION_TOKEN } from '../../common/constants/userInforPreferences';
 import { IWebsocketHandler } from './handler/WebsocketHandler.interface';
-import { MessageNotificationManager } from '../../notification';
 
 export class WebSocketService {
   ws: webSocket.WebSocket;
@@ -60,7 +59,7 @@ export class WebSocketService {
       this.websocketHandler.handleOnError(this.ws, err);
     });
 
-    const userInfo = await getUserInfo();
+    const userInfo = await UserInfoPreferenceUtil.getUserInfo(getContext());
     this.ws.connect(
       target.get(),
       {

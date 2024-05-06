@@ -4,7 +4,7 @@ import { IUser } from '../common/types/User.type';
 import { isSuccess } from '../common/utils/http';
 import router from '@ohos.router';
 import { AUTHENTICATION_TOKEN, USER_ID } from '../common/constants/userInforPreferences';
-import { getUserInfo } from '../common/utils/userInfoPreference';
+import { UserInfoPreferenceUtil } from '../common/utils/userInfoPreference';
 
 @Entry
 @Component
@@ -21,7 +21,7 @@ struct LoadingPage {
         this.message = this.message + '.';
       }
     }, 1000);
-    const userInfo = await getUserInfo();
+    const userInfo = await UserInfoPreferenceUtil.getUserInfo(getContext());
 
     const token = userInfo[AUTHENTICATION_TOKEN];
     const userId = userInfo[USER_ID];

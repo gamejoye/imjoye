@@ -1,7 +1,7 @@
 import router from '@ohos.router';
 import { USER } from '../constants/appStorageKeys';
 import { IUser } from '../types/User.type';
-import { deleteUserInfo } from '../utils/userInfoPreference';
+import { UserInfoPreferenceUtil } from '../utils/userInfoPreference';
 
 @Component
 export struct UserSideBar {
@@ -123,7 +123,7 @@ struct ConfirmUserLogout {
           .fontSize(16)
           .padding(10)
           .onClick(async () => {
-            await deleteUserInfo();
+            await UserInfoPreferenceUtil.deleteUserInfo(getContext());
             this.controller.close();
             router.clear();
             router.replaceUrl({
