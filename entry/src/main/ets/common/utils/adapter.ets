@@ -4,27 +4,16 @@ import { ClientUser } from '../database/rdb/ClientUser';
 import { ClientChatroom } from '../database/rdb/ClientChatroom';
 import { ClientUserChatroom } from '../database/rdb/ClientUserChatroom';
 
-export class Adapter {
-  private static value: unknown;
-
-  static from<Source>(originData: Source) {
-    this.value = originData;
-    return this;
-  }
-
-  static to<Input, Output>(mapFn: (input: Input) => Output): Output {
-    return mapFn(this.value as Input);
-  }
-}
-
 export class ClientChatroomAdapter {
   private channel: IChatChannel;
+  private user: IUser;
 
-  constructor(channel: IChatChannel) {
+  constructor(user: IUser, channel: IChatChannel) {
+    this.user = user;
     this.channel = channel;
   }
 
-  adapt(): ClientChatroom {
+  getClientChatroom(): ClientChatroom {
     const clientChatroom: ClientChatroom = {
       id: this.channel.chatroom.id,
       type: this.channel.chatroom.type,
@@ -33,6 +22,16 @@ export class ClientChatroomAdapter {
       createTime: this.channel.chatroom.createTime,
     }
     return clientChatroom;
+  }
+
+  getClientUserChatroom(): ClientUserChatroom {
+    const clientUserChatroom: ClientUserChatroom = {
+      userId: this.user.id,
+      chatroomId: this.channel.chatroom.id,
+      joinTime: this.channel.joinTime,
+      latestVisitTime: this.channel.latestVisitTime,
+    };
+    return clientUserChatroom;
   }
 }
 
@@ -48,7 +47,7 @@ export class ChatChannelAdapter {
     this.userChatroom = userChatroom;
   }
 
-  adapt(): IChatChannel {
+  getChatChannel(): IChatChannel {
     /**
      * TODO
      * 1. rdb获取本地消息
@@ -57,6 +56,7 @@ export class ChatChannelAdapter {
     const channel: IChatChannel = {
       latestMessage: null,
       latestVisitTime: this.userChatroom.latestVisitTime,
+      joinTime: this.userChatroom.joinTime,
       unreadMessageCount: 0,
       onlineUserIds: [],
       chatroom: {
@@ -78,7 +78,7 @@ export class ClientUserAdapter {
     this.user = user;
   }
 
-  adapt(): ClientUser {
+  getClientUser(): ClientUser {
     const clientUser: ClientUser = {
       id: this.user.id,
       username: this.user.username,
