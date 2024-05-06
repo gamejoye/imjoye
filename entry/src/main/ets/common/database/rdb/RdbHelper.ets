@@ -144,7 +144,7 @@ class RdbHelper implements IRdbHelper {
       name: 'name',
       type: 'VARCHAR',
       length: 1024,
-      nullable: false,
+      nullable: true,
     }, {
       name: 'createTime',
       type: 'DATETIME',
@@ -200,11 +200,11 @@ class RdbHelper implements IRdbHelper {
     }, {
       name: 'joinTime',
       type: 'DATETIME',
-      nullable: true, // TODO nullable: false
+      nullable: false,
     }, {
       name: 'latestVisitTime',
       type: 'DATETIME',
-      nullable: true,
+      nullable: false,
     }]);
   }
 }
