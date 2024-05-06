@@ -15,7 +15,6 @@ import { fetchFriends } from '../api/httpApi/user';
 import { USER } from '../common/constants/appStorageKeys';
 import { IClientChatroomUpdate, IEmitterMessage } from '../common/types/EmitterMessage.type';
 import { WebsocketHandler } from '../api/webSocketApi/handler/WebsocketHandler';
-import workScheduler from '@ohos.resourceschedule.workScheduler';
 
 function chatChannelStateSorter(state1: IChatChannel, state2: IChatChannel) {
   const date1 = new Date(state1.latestMessage?.createTime);
@@ -62,7 +61,6 @@ struct HomePage {
     emitter.on({
       eventId: EmitterEvent.CLIENT_CHATROOM_UPDATE,
     }, async ({ data }: { data: IEmitterMessage }) => {
-      // TODO 更新 chatChannel
       const payload: IClientChatroomUpdate = JSON.parse(data.plainText);
       const { statusCode, data: channel, message } = await fetchChatroomSummary({
         id: payload.id,
@@ -116,8 +114,7 @@ struct HomePage {
       this.allUnreadMessageCount = this.chatChannels
         .map(state => state.unreadMessageCount)
         .reduce((unreadCount, currentSum) => unreadCount + currentSum, 0);
-
-      ClientChatroomService.save(this.user, this.chatChannels);
+      await ClientChatroomService.save(this.user, this.chatChannels);
     }
   }
 
