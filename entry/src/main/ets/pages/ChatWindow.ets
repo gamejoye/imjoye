@@ -4,7 +4,6 @@ import { fetchMessages, createMessage } from '../api/httpApi';
 import { IMessage } from '../common/types/Message.type'
 import { IUser } from '../common/types/User.type';
 import { MessageList } from '../common/components/MessageList';
-import { ClientChatroomService } from '../common/database/rdb/ClientChatroom';
 import { ClientUserChatroomService } from '../common/database/rdb/ClientUserChatroom';
 import { getCurrentDatetime } from '../common/utils/datetime';
 import { EmitterEvent } from '../common/constants/emitterEvent';
@@ -109,7 +108,11 @@ struct ChatWindow {
   }
 
   async handleOnMessageSubmit() {
-    const temporaryId = getMessageTemporaryId(this.messageStates);
+    const temporaryId = getMessageTemporaryId(
+      this.messageStates
+        .map((mss) => mss.message.temporaryId)
+        .filter((tid) => tid !== null)
+    );
     const partialMessage: IMessage = {
       id: null as any,
       temporaryId,

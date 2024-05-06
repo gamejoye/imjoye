@@ -1,13 +1,9 @@
-import { IMessageState } from '../types/MessageState.type';
-
-export function getMessageTemporaryId(messageStates: Array<IMessageState>) {
+export function getMessageTemporaryId(usedTemporaryIds: Array<number>) {
   let x = -1;
-  const usedTemporaryIds: Set<number> = new Set();
-  messageStates.forEach((messageState) => {
-    if(typeof messageState.message.temporaryId === 'number') {
-      usedTemporaryIds.add(messageState.message.temporaryId);
-    }
+  const usedTemporaryIdsSet: Set<number> = new Set();
+  usedTemporaryIds.forEach((id) => {
+    usedTemporaryIdsSet.add(id);
   });
-  while (usedTemporaryIds.has(x)) x--;
+  while (usedTemporaryIdsSet.has(x)) x--;
   return x;
 }
