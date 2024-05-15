@@ -1,0 +1,20 @@
+name: Receive repository sdk-update event
+
+on:
+  repository_dispatch:
+    types: [sdk-update]
+permissions:
+  contents: write
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Git
+        run: |
+          git config --global user.email 'gamejoye@gmail.com'
+          git config --global user.name 'gamejoye'
+      - name: Run fetch-sdk.sh script
+        run: |
+          chmod +x ./fetch-sdk.sh
+          ./fetch-sdk.sh
