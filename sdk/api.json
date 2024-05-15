@@ -1,0 +1,848 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_getUserByid",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/{id}/friends": {
+      "get": {
+        "operationId": "UsersController_getFriendsById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/{id}/friends/{friendId}": {
+      "get": {
+        "operationId": "UsersController_getFriendByUserIdAndFriendId",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "friendId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "detail",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/avatar/upload": {
+      "post": {
+        "operationId": "UsersController_uploadFile",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "用户登录",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功"
+          },
+          "401": {
+            "description": "登录失败"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "summary": "用户注册",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "注册成功"
+          },
+          "401": {
+            "description": "注册失败"
+          },
+          "409": {
+            "description": "用户邮箱已经存在"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/chatrooms/{chatroomId}/visit": {
+      "put": {
+        "operationId": "ChatroomsController_visitChatroom",
+        "summary": "更新用户对于聊天室的最后访问时间",
+        "parameters": [
+          {
+            "name": "timestamp",
+            "required": true,
+            "in": "query",
+            "example": "2024-04-23 21:45",
+            "description": "访问聊天室的最后时间戳",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chatroomId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "成功更新用户访问聊天室的最后时间"
+          },
+          "404": {
+            "description": "聊天室不存在或者无权访问"
+          }
+        },
+        "tags": [
+          "chatrooms"
+        ]
+      }
+    },
+    "/chatrooms/{chatroomId}": {
+      "get": {
+        "operationId": "ChatroomsController_getChatroom",
+        "summary": "根据聊天室id获取单个聊天室",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取单个聊天室",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Chatroom"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
+          },
+          "404": {
+            "description": "未找到聊天室"
+          }
+        },
+        "tags": [
+          "chatrooms"
+        ]
+      }
+    },
+    "/chatrooms": {
+      "get": {
+        "operationId": "ChatroomsController_getSingleChatroomByFriendId",
+        "summary": "根据userId和friendId获取单个单聊聊天室",
+        "parameters": [
+          {
+            "name": "friend_id",
+            "required": true,
+            "in": "query",
+            "example": 2,
+            "description": "好友id",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取单个单聊聊天室",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Chatroom"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
+          },
+          "404": {
+            "description": "未找到聊天室"
+          }
+        },
+        "tags": [
+          "chatrooms"
+        ]
+      }
+    },
+    "/chatrooms/summaries/{chatroomId}": {
+      "get": {
+        "operationId": "ChatroomsController_getChatroomSummary",
+        "parameters": [
+          {
+            "name": "chatroomId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "timestamp",
+            "required": true,
+            "in": "query",
+            "example": "2024-04-23 21:45",
+            "description": "最后一次访问聊天室的时间戳",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取单个聊天室的chatroomSummaries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatroomSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatroomSummary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "chatrooms"
+        ]
+      }
+    },
+    "/chatrooms/summaries": {
+      "post": {
+        "operationId": "ChatroomsController_getChatroomSummaries",
+        "summary": "获取聊天室信息概要",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetChatroomSummariesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取chatroomSummaries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatroomSummary"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatroomSummary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "chatrooms"
+        ]
+      }
+    },
+    "/messages": {
+      "get": {
+        "operationId": "MessagesController_getMessagesByChatroomId",
+        "summary": "根据roomId获取消息",
+        "parameters": [
+          {
+            "name": "room_id",
+            "required": true,
+            "in": "query",
+            "description": "消息所属聊天室的id",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取聊天室消息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
+          }
+        },
+        "tags": [
+          "messages"
+        ]
+      },
+      "post": {
+        "operationId": "MessagesController_addMessage",
+        "summary": "在聊天室中发送消息",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IAddMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "成功发送消息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
+          }
+        },
+        "tags": [
+          "messages"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "IMJoye Api",
+    "description": "[如有天樱花再开] 测试IMJoye Api",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Api/V1",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "LoginUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "gamejoye@gmail.com",
+            "description": "用户邮箱"
+          },
+          "password": {
+            "type": "string",
+            "example": "147jkl...",
+            "description": "用户密码"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RegisterUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "gamejoye",
+            "description": "用户名"
+          },
+          "email": {
+            "type": "string",
+            "example": "gamejoye@gmail.com",
+            "description": "用户邮箱"
+          },
+          "password": {
+            "type": "string",
+            "example": "147jkl...",
+            "description": "用户密码"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "example": "https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg",
+            "description": "用户头像"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password",
+          "avatarUrl"
+        ]
+      },
+      "Chatroom": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 987654321,
+            "description": "房间号"
+          },
+          "type": {
+            "type": "string",
+            "example": "SINGLE",
+            "description": "聊天室类型(单聊、多聊)"
+          },
+          "name": {
+            "type": "string",
+            "example": "chatroomName",
+            "description": "聊天室名字"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "example": "https://avatars.githubusercontent.com/u/88575063?v=4",
+            "description": "聊天室的头像 当为单聊的时候为对方的头像"
+          },
+          "createTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "聊天室建立时间"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "avatarUrl",
+          "createTime"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 987654321,
+            "description": "唯一主键"
+          },
+          "username": {
+            "type": "string",
+            "example": "gamejoye",
+            "description": "用户名"
+          },
+          "email": {
+            "type": "string",
+            "example": "gamejoye@gmail.com",
+            "description": "用户名邮箱"
+          },
+          "passwordHash": {
+            "type": "string",
+            "example": "xxxxx",
+            "description": "经过hash之后的密码"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "example": "https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg",
+            "description": "用户头像"
+          },
+          "description": {
+            "type": "string",
+            "example": "天天开心， 天天向上",
+            "description": "用户个性签名"
+          },
+          "createTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "注册时间"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "email",
+          "passwordHash",
+          "avatarUrl",
+          "description",
+          "createTime"
+        ]
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 987654321,
+            "description": "消息id"
+          },
+          "temporaryId": {
+            "type": "number",
+            "example": 4751776,
+            "description": "消息的暂时id从前端传来"
+          },
+          "chatroom": {
+            "description": "消息所属聊天室",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chatroom"
+              }
+            ]
+          },
+          "from": {
+            "description": "消息由谁发出",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              }
+            ]
+          },
+          "content": {
+            "type": "string",
+            "example": "你好，很高兴认识你",
+            "description": "消息内容"
+          },
+          "createTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "消息创建时间"
+          }
+        },
+        "required": [
+          "id",
+          "temporaryId",
+          "chatroom",
+          "from",
+          "content",
+          "createTime"
+        ]
+      },
+      "ChatroomSummary": {
+        "type": "object",
+        "properties": {
+          "latestMessage": {
+            "description": "当前聊天室的最新一条消息",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Message"
+              }
+            ]
+          },
+          "latestVisitTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "当前聊天室最后一次用户的访问时间 最早为用户加入聊天室的时间"
+          },
+          "joinTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "用户加入聊天室的时间"
+          },
+          "unreadMessageCount": {
+            "type": "number",
+            "examples": [
+              1,
+              55,
+              0,
+              199
+            ],
+            "description": "当前聊天室用户未读的消息数量"
+          },
+          "onlineUserIds": {
+            "example": [
+              21,
+              2642,
+              366,
+              4453,
+              576,
+              641,
+              712
+            ],
+            "description": "当前聊天室在线用户的id数组",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "chatroom": {
+            "description": "当前summary记录所对应的chatroom",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chatroom"
+              }
+            ]
+          }
+        },
+        "required": [
+          "latestMessage",
+          "latestVisitTime",
+          "joinTime",
+          "unreadMessageCount",
+          "onlineUserIds",
+          "chatroom"
+        ]
+      },
+      "GetChatroomSummariesDto": {
+        "type": "object",
+        "properties": {
+          "latestVisitTimes": {
+            "example": [
+              {
+                "id": 11234889,
+                "latestVisitTime": "2024-03-23 19:12"
+              },
+              {
+                "id": 12481287,
+                "latestVisitTime": "2024-03-21 14:55"
+              }
+            ],
+            "description": "最后一次用户访问各个聊天室的信息",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "latestVisitTimes"
+        ]
+      },
+      "IAddMessageChatroomDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "examples": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "description": "待添加消息所属聊天室id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "IAddMessageFromDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "examples": [
+              7,
+              8,
+              9,
+              10
+            ],
+            "description": "待添加消息发送者的id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "IAddMessageDto": {
+        "type": "object",
+        "properties": {
+          "temporaryId": {
+            "type": "number",
+            "examples": [
+              124,
+              5125
+            ],
+            "description": "前端用于展示loading Message所需要使用的暂时id"
+          },
+          "chatroom": {
+            "examples": [
+              {
+                "id": 7
+              },
+              {
+                "id": 8
+              },
+              {
+                "id": 9
+              },
+              {
+                "id": 10
+              }
+            ],
+            "description": "待添加消息所需要的chatroom的基本信息",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IAddMessageChatroomDto"
+              }
+            ]
+          },
+          "from": {
+            "examples": [
+              {
+                "id": 1
+              },
+              {
+                "id": 2
+              },
+              {
+                "id": 3
+              },
+              {
+                "id": 4
+              },
+              {
+                "id": 5
+              }
+            ],
+            "description": "待添加消息所需要的发送者的基本信息",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IAddMessageFromDto"
+              }
+            ]
+          },
+          "content": {
+            "type": "string",
+            "examples": [
+              "如有天樱花再开",
+              "无爱自是不能爱人"
+            ],
+            "description": "消息的内容"
+          }
+        },
+        "required": [
+          "temporaryId",
+          "chatroom",
+          "from",
+          "content"
+        ]
+      }
+    }
+  }
+}
