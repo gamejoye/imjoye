@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/gamejoye/.ohos/config/auto_debug_ImJoye_com.gamejoye.imjoye_30086000760678000.cer",
-          "storePassword": "0000001B037E87AFCC7FE8DA9B9D0081A844D77F28AB14C17329C01CF2A1B560D3419A806D60F9AE986D05",
+          "certpath": "/Users/gamejoye/.ohos/config/auto_debug_IMJoye_com.gamejoye.imjoye_30086000760678000.cer",
+          "storePassword": "0000001BC5F8BAFD9D8C7CCD610973B5D5EAD422A74220AA00A647117F42DF4A116B541ADF89BCB8D0FC42",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B16793E5A862A3707966DDE246032AEFBDCDB5692C277D42546F1083B95FD85B5234A55A73DAEF7",
-          "profile": "/Users/gamejoye/.ohos/config/auto_debug_ImJoye_com.gamejoye.imjoye_30086000760678000.p7b",
+          "keyPassword": "0000001B522C804211876F8A2C27A2F7AFE72CFDC0759B4DE905E033445A5A99CF2767D370A0D5683299AE",
+          "profile": "/Users/gamejoye/.ohos/config/auto_debug_IMJoye_com.gamejoye.imjoye_30086000760678000.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/gamejoye/.ohos/config/auto_debug_ImJoye_com.gamejoye.imjoye_30086000760678000.p12"
+          "storeFile": "/Users/gamejoye/.ohos/config/auto_debug_IMJoye_com.gamejoye.imjoye_30086000760678000.p12"
         }
       }
     ],
