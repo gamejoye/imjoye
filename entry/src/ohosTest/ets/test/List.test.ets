@@ -1,3 +1,5 @@
+import galleryUtilTest from './unit/util/galleryUtil.test'
+import configUtilTest from './unit/util/configUtil.test'
 import ClientChatroomServiceTest from './unit/database/ClientChatroomService.test'
 import ClientUserServiceTest from './unit/database/ClientUserService.test'
 import adapterTest from './unit/util/adapter.test'
@@ -12,4 +14,6 @@ export default function testsuite() {
   httpTest()
   adapterTest()
   userInfoPreferenceUtilTest()
+  configUtilTest()
+  galleryUtilTest()
 }
