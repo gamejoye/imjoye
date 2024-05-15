@@ -2,9 +2,10 @@ import router from '@ohos.router';
 import promptAction from '@ohos.promptAction';
 import { register } from '../api/httpApi/auth';
 import { isSuccess } from '../common/utils/http';
-import { openGallery } from '../common/utils/galleryUtil';
+import { GalleryUtil } from '../common/utils/galleryUtil';
 import PermissionRequester from '../permissions/PermissionRequester';
 import { uploadAvatar } from '../api/httpApi/file';
+import picker from '@ohos.file.picker';
 
 @Entry
 @Component
@@ -90,7 +91,10 @@ struct Register {
   handleOnOpenGallery = async () => {
     const accept = await PermissionRequester.requestMediaPermission();
     if (accept) {
-      const { dataShare, internalCache } = await openGallery();
+      const { dataShare, internalCache } = await new GalleryUtil(
+        getContext(),
+        new picker.PhotoViewPicker()
+      ).openGallery();
       if (dataShare.length > 0) {
         this.avatarUrl = dataShare[0];
         this.internalAvatarUrl = internalCache[0];
