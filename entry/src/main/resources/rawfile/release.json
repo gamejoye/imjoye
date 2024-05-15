@@ -1,0 +1,4 @@
+{
+  "apiUrl": "https://imjoye.chat:8080/",
+  "webSocketUrl": "wss://imjoye.chat:5173/"
+}
