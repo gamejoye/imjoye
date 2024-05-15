@@ -16,5 +16,5 @@ jobs:
           git config --global user.name 'gamejoye'
       - name: Run fetch-sdk.sh script
         run: |
-          chmod +x ./fetch-sdk.sh
-          ./fetch-sdk.sh
+          chmod +x ./shell/fetch-sdk.sh
+          ./shell/fetch-sdk.sh
