@@ -2,28 +2,54 @@ import UIAbility from '@ohos.app.ability.UIAbility';
 import hilog from '@ohos.hilog';
 import window from '@ohos.window';
 import RdbHelper from '../common/database/rdb/RdbHelper';
+import router from '@ohos.router';
+import ConfigUtil from '../common/utils/configUtil';
 
 export default class EntryAbility extends UIAbility {
-
-  onCreate(want, launchParam) {
+  async onCreate(want, launchParam) {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
-    /**
-     * TODO 环境变量初始化
-     */
-    Environment.EnvProp('apiUrl', 'http://192.168.43.71:8080/');
-    Environment.EnvProp('webSocketUrl', 'ws://192.168.43.71:5173/');
+    console.log("want: ", JSON.stringify(want), JSON.stringify(launchParam));
 
-    RdbHelper.initRdb(this.context);
+    const configUtil = new ConfigUtil(this.context);
+    const config = await configUtil.getConfig();
+    configUtil.loadEnvironment(config);
+
+    await RdbHelper.initRdb(this.context);
   }
 
   onDestroy() {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
+  onNewWant(want) {
+    const chatroom = want.parameters?.chatroom;
+    if (chatroom) {
+      /**
+       * MessageNotification 触发onNewWant
+       */
+      const state = router.getState();
+      if (state.name === 'ChatWindow') {
+        router.replaceUrl({
+          url: 'pages/ChatWindow',
+          params: {
+            'chatroom': chatroom
+          }
+        });
+      } else {
+        router.pushUrl({
+          url: 'pages/ChatWindow',
+          params: {
+            'chatroom': chatroom
+          }
+        }, router.RouterMode.Single);
+      }
+    }
+  }
+
   async onWindowStageCreate(windowStage: window.WindowStage) {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
     windowStage.loadContent('pages/LoadingPage', (err, data) => {
-      if(err) {
+      if (err) {
         hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate err', JSON.stringify(err));
       }
       hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate success', JSON.stringify(data));
