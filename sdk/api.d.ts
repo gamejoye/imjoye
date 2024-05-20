@@ -60,39 +60,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    UserVo: {
-      /**
-       * @description 唯一主键
-       * @example 987654321
-       */
-      id: number;
-      /**
-       * @description 用户名
-       * @example gamejoye
-       */
-      username: string;
-      /**
-       * @description 用户名邮箱
-       * @example gamejoye@gmail.com
-       */
-      email: string;
-      /**
-       * @description 用户头像
-       * @example https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg
-       */
-      avatarUrl: string;
-      /**
-       * @description 用户个性签名
-       * @example 天天开心， 天天向上
-       */
-      description: string;
-      /**
-       * @description 注册时间
-       * @example 2024-03-23 19:12
-       */
-      createTime: string;
-    };
-    FriendInfoVo: Record<string, never>;
+    ApiResult: Record<string, never>;
     LoginUserRequestDto: {
       /**
        * @description 用户邮箱
@@ -105,7 +73,6 @@ export interface components {
        */
       password: string;
     };
-    LoginVo: Record<string, never>;
     RegisterUserRequestDto: {
       /**
        * @description 用户名
@@ -127,64 +94,6 @@ export interface components {
        * @example https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg
        */
       avatarUrl: string;
-    };
-    ChatroomVo: Record<string, never>;
-    MessageVo: {
-      /**
-       * @description 消息id
-       * @example 987654321
-       */
-      id: number;
-      /**
-       * @description 消息的暂时id从前端传来
-       * @example 4751776
-       */
-      temporaryId: number;
-      /** @description 消息所属聊天室 */
-      chatroom: components["schemas"]["ChatroomVo"];
-      /** @description 消息由谁发出 */
-      from: components["schemas"]["UserVo"];
-      /**
-       * @description 消息内容
-       * @example 你好，很高兴认识你
-       */
-      content: string;
-      /**
-       * @description 消息创建时间
-       * @example 2024-03-23 19:12
-       */
-      createTime: string;
-    };
-    ChatroomSummaryVo: {
-      /**
-       * @description 当前聊天室最后一次用户的访问时间 最早为用户加入聊天室的时间
-       * @example 2024-03-23 19:12
-       */
-      latestVisitTime: string;
-      /**
-       * @description 用户加入聊天室的时间
-       * @example 2024-03-23 19:12
-       */
-      joinTime: string;
-      /** @description 当前聊天室用户未读的消息数量 */
-      unreadMessageCount: number;
-      /**
-       * @description 当前聊天室在线用户的id数组
-       * @example [
-       *   21,
-       *   2642,
-       *   366,
-       *   4453,
-       *   576,
-       *   641,
-       *   712
-       * ]
-       */
-      onlineUserIds: string[];
-      /** @description 当前summary记录所对应的chatroom */
-      chatroom: components["schemas"]["ChatroomVo"];
-      /** @description 当前聊天室的最新一条消息 */
-      latestMessage: components["schemas"]["MessageVo"];
     };
     GetChatroomSummariesDto: {
       /**
@@ -245,7 +154,7 @@ export interface operations {
       /** @description 成功获取用户信息 */
       200: {
         content: {
-          "application/json": components["schemas"]["UserVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -265,7 +174,7 @@ export interface operations {
       /** @description 成功根据userId获取好友信息列表 */
       200: {
         content: {
-          "application/json": unknown[];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -290,7 +199,7 @@ export interface operations {
       /** @description 成功获取好友信息 */
       200: {
         content: {
-          "application/json": components["schemas"]["FriendInfoVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -317,7 +226,7 @@ export interface operations {
       /** @description 头像上传成功 */
       201: {
         content: {
-          "application/json": components["schemas"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 头像大小超过2MB */
@@ -337,7 +246,7 @@ export interface operations {
       /** @description 登录成功 */
       200: {
         content: {
-          "application/json": components["schemas"]["LoginVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 登录失败 */
@@ -357,7 +266,7 @@ export interface operations {
       /** @description 注册成功 */
       200: {
         content: {
-          "application/json": components["schemas"]["UserVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 注册失败 */
@@ -406,7 +315,7 @@ export interface operations {
       /** @description 成功获取单个聊天室 */
       200: {
         content: {
-          "application/json": components["schemas"]["ChatroomVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -434,7 +343,7 @@ export interface operations {
       /** @description 成功获取单个单聊聊天室 */
       200: {
         content: {
-          "application/json": components["schemas"]["ChatroomVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -464,7 +373,7 @@ export interface operations {
       /** @description 成功获取单个聊天室的chatroomSummaries */
       200: {
         content: {
-          "application/json": components["schemas"]["ChatroomSummaryVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -484,7 +393,7 @@ export interface operations {
       /** @description 成功获取chatroomSummaries */
       200: {
         content: {
-          "application/json": unknown[];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -508,7 +417,7 @@ export interface operations {
       /** @description 成功获取聊天室消息 */
       200: {
         content: {
-          "application/json": unknown[];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */
@@ -532,7 +441,7 @@ export interface operations {
       /** @description 成功发送消息 */
       201: {
         content: {
-          "application/json": components["schemas"]["MessageVo"];
+          "application/json": components["schemas"]["ApiResult"];
         };
       };
       /** @description 未认证用户 */

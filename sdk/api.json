@@ -21,7 +21,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -55,7 +55,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -100,7 +100,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FriendInfoVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -144,7 +144,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -179,7 +179,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -214,7 +214,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -288,7 +288,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChatroomVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -327,7 +327,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChatroomVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -373,7 +373,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChatroomSummaryVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -408,7 +408,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -444,7 +444,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -480,7 +480,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageVo"
+                  "$ref": "#/components/schemas/ApiResult"
                 }
               }
             }
@@ -516,50 +516,7 @@
   "servers": [],
   "components": {
     "schemas": {
-      "UserVo": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 987654321,
-            "description": "唯一主键"
-          },
-          "username": {
-            "type": "string",
-            "example": "gamejoye",
-            "description": "用户名"
-          },
-          "email": {
-            "type": "string",
-            "example": "gamejoye@gmail.com",
-            "description": "用户名邮箱"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "example": "https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg",
-            "description": "用户头像"
-          },
-          "description": {
-            "type": "string",
-            "example": "天天开心， 天天向上",
-            "description": "用户个性签名"
-          },
-          "createTime": {
-            "type": "string",
-            "example": "2024-03-23 19:12",
-            "description": "注册时间"
-          }
-        },
-        "required": [
-          "id",
-          "username",
-          "email",
-          "avatarUrl",
-          "description",
-          "createTime"
-        ]
-      },
-      "FriendInfoVo": {
+      "ApiResult": {
         "type": "object",
         "properties": {}
       },
@@ -581,10 +538,6 @@
           "email",
           "password"
         ]
-      },
-      "LoginVo": {
-        "type": "object",
-        "properties": {}
       },
       "RegisterUserRequestDto": {
         "type": "object",
@@ -615,124 +568,6 @@
           "email",
           "password",
           "avatarUrl"
-        ]
-      },
-      "ChatroomVo": {
-        "type": "object",
-        "properties": {}
-      },
-      "MessageVo": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 987654321,
-            "description": "消息id"
-          },
-          "temporaryId": {
-            "type": "number",
-            "example": 4751776,
-            "description": "消息的暂时id从前端传来"
-          },
-          "chatroom": {
-            "description": "消息所属聊天室",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ChatroomVo"
-              }
-            ]
-          },
-          "from": {
-            "description": "消息由谁发出",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UserVo"
-              }
-            ]
-          },
-          "content": {
-            "type": "string",
-            "example": "你好，很高兴认识你",
-            "description": "消息内容"
-          },
-          "createTime": {
-            "type": "string",
-            "example": "2024-03-23 19:12",
-            "description": "消息创建时间"
-          }
-        },
-        "required": [
-          "id",
-          "temporaryId",
-          "chatroom",
-          "from",
-          "content",
-          "createTime"
-        ]
-      },
-      "ChatroomSummaryVo": {
-        "type": "object",
-        "properties": {
-          "latestVisitTime": {
-            "type": "string",
-            "example": "2024-03-23 19:12",
-            "description": "当前聊天室最后一次用户的访问时间 最早为用户加入聊天室的时间"
-          },
-          "joinTime": {
-            "type": "string",
-            "example": "2024-03-23 19:12",
-            "description": "用户加入聊天室的时间"
-          },
-          "unreadMessageCount": {
-            "type": "number",
-            "examples": [
-              1,
-              55,
-              0,
-              199
-            ],
-            "description": "当前聊天室用户未读的消息数量"
-          },
-          "onlineUserIds": {
-            "example": [
-              21,
-              2642,
-              366,
-              4453,
-              576,
-              641,
-              712
-            ],
-            "description": "当前聊天室在线用户的id数组",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "chatroom": {
-            "description": "当前summary记录所对应的chatroom",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ChatroomVo"
-              }
-            ]
-          },
-          "latestMessage": {
-            "description": "当前聊天室的最新一条消息",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/MessageVo"
-              }
-            ]
-          }
-        },
-        "required": [
-          "latestVisitTime",
-          "joinTime",
-          "unreadMessageCount",
-          "onlineUserIds",
-          "chatroom",
-          "latestMessage"
         ]
       },
       "GetChatroomSummariesDto": {
