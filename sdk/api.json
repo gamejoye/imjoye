@@ -3,7 +3,8 @@
   "paths": {
     "/users/{id}": {
       "get": {
-        "operationId": "UsersController_getUserByid",
+        "operationId": "UsersController_getUserById",
+        "summary": "根据userId获取用户信息",
         "parameters": [
           {
             "name": "id",
@@ -16,7 +17,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "成功获取用户信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserVo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
           }
         },
         "tags": [
@@ -27,6 +38,7 @@
     "/users/{id}/friends": {
       "get": {
         "operationId": "UsersController_getFriendsById",
+        "summary": "根据userId获取好友信息列表",
         "parameters": [
           {
             "name": "id",
@@ -39,7 +51,20 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "成功根据userId获取好友信息列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
+          },
+          "403": {
+            "description": "权限不足"
           }
         },
         "tags": [
@@ -49,7 +74,8 @@
     },
     "/users/{id}/friends/{friendId}": {
       "get": {
-        "operationId": "UsersController_getFriendByUserIdAndFriendId",
+        "operationId": "UsersController_getFriendInfoByUserIdAndFriendId",
+        "summary": "获取好友信息",
         "parameters": [
           {
             "name": "id",
@@ -66,19 +92,24 @@
             "schema": {
               "type": "number"
             }
-          },
-          {
-            "name": "detail",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "成功获取好友信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendInfoVo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未认证用户"
+          },
+          "403": {
+            "description": "权限不足"
           }
         },
         "tags": [
@@ -88,11 +119,38 @@
     },
     "/users/avatar/upload": {
       "post": {
-        "operationId": "UsersController_uploadFile",
+        "operationId": "UsersController_uploadAvatar",
+        "summary": "上传头像",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": ""
+            "description": "头像上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "头像大小超过2MB"
           }
         },
         "tags": [
@@ -117,7 +175,14 @@
         },
         "responses": {
           "200": {
-            "description": "登录成功"
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginVo"
+                }
+              }
+            }
           },
           "401": {
             "description": "登录失败"
@@ -145,7 +210,14 @@
         },
         "responses": {
           "200": {
-            "description": "注册成功"
+            "description": "注册成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserVo"
+                }
+              }
+            }
           },
           "401": {
             "description": "注册失败"
@@ -202,7 +274,7 @@
         "summary": "根据聊天室id获取单个聊天室",
         "parameters": [
           {
-            "name": "id",
+            "name": "chatroomId",
             "required": true,
             "in": "path",
             "schema": {
@@ -216,7 +288,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Chatroom"
+                  "$ref": "#/components/schemas/ChatroomVo"
                 }
               }
             }
@@ -255,7 +327,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Chatroom"
+                  "$ref": "#/components/schemas/ChatroomVo"
                 }
               }
             }
@@ -301,20 +373,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChatroomSummary"
+                  "$ref": "#/components/schemas/ChatroomSummaryVo"
                 }
               }
             }
           },
           "401": {
-            "description": "未认证用户",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChatroomSummary"
-                }
-              }
-            }
+            "description": "未认证用户"
           }
         },
         "tags": [
@@ -343,26 +408,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ChatroomSummary"
-                  }
+                  "type": "array"
                 }
               }
             }
           },
           "401": {
-            "description": "未认证用户",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ChatroomSummary"
-                  }
-                }
-              }
-            }
+            "description": "未认证用户"
           }
         },
         "tags": [
@@ -379,7 +431,8 @@
             "name": "room_id",
             "required": true,
             "in": "query",
-            "description": "消息所属聊天室的id",
+            "example": 2,
+            "description": "房间id",
             "schema": {
               "type": "number"
             }
@@ -391,16 +444,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Message"
-                  }
+                  "type": "array"
                 }
               }
             }
           },
           "401": {
             "description": "未认证用户"
+          },
+          "404": {
+            "description": "聊天室不存在"
           }
         },
         "tags": [
@@ -427,13 +480,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Message"
+                  "$ref": "#/components/schemas/MessageVo"
                 }
               }
             }
           },
           "401": {
             "description": "未认证用户"
+          },
+          "403": {
+            "description": "无法在该聊天室发送消息"
+          },
+          "404": {
+            "description": "资源不存在"
           }
         },
         "tags": [
@@ -457,6 +516,53 @@
   "servers": [],
   "components": {
     "schemas": {
+      "UserVo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 987654321,
+            "description": "唯一主键"
+          },
+          "username": {
+            "type": "string",
+            "example": "gamejoye",
+            "description": "用户名"
+          },
+          "email": {
+            "type": "string",
+            "example": "gamejoye@gmail.com",
+            "description": "用户名邮箱"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "example": "https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg",
+            "description": "用户头像"
+          },
+          "description": {
+            "type": "string",
+            "example": "天天开心， 天天向上",
+            "description": "用户个性签名"
+          },
+          "createTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "注册时间"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "email",
+          "avatarUrl",
+          "description",
+          "createTime"
+        ]
+      },
+      "FriendInfoVo": {
+        "type": "object",
+        "properties": {}
+      },
       "LoginUserRequestDto": {
         "type": "object",
         "properties": {
@@ -475,6 +581,10 @@
           "email",
           "password"
         ]
+      },
+      "LoginVo": {
+        "type": "object",
+        "properties": {}
       },
       "RegisterUserRequestDto": {
         "type": "object",
@@ -507,93 +617,11 @@
           "avatarUrl"
         ]
       },
-      "Chatroom": {
+      "ChatroomVo": {
         "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 987654321,
-            "description": "房间号"
-          },
-          "type": {
-            "type": "string",
-            "example": "SINGLE",
-            "description": "聊天室类型(单聊、多聊)"
-          },
-          "name": {
-            "type": "string",
-            "example": "chatroomName",
-            "description": "聊天室名字"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "example": "https://avatars.githubusercontent.com/u/88575063?v=4",
-            "description": "聊天室的头像 当为单聊的时候为对方的头像"
-          },
-          "createTime": {
-            "type": "string",
-            "example": "2024-03-23 19:12",
-            "description": "聊天室建立时间"
-          }
-        },
-        "required": [
-          "id",
-          "type",
-          "name",
-          "avatarUrl",
-          "createTime"
-        ]
+        "properties": {}
       },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 987654321,
-            "description": "唯一主键"
-          },
-          "username": {
-            "type": "string",
-            "example": "gamejoye",
-            "description": "用户名"
-          },
-          "email": {
-            "type": "string",
-            "example": "gamejoye@gmail.com",
-            "description": "用户名邮箱"
-          },
-          "passwordHash": {
-            "type": "string",
-            "example": "xxxxx",
-            "description": "经过hash之后的密码"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "example": "https://gamejoye.top/static/media/bg.6885a3ed90df348b4f7a.jpeg",
-            "description": "用户头像"
-          },
-          "description": {
-            "type": "string",
-            "example": "天天开心， 天天向上",
-            "description": "用户个性签名"
-          },
-          "createTime": {
-            "type": "string",
-            "example": "2024-03-23 19:12",
-            "description": "注册时间"
-          }
-        },
-        "required": [
-          "id",
-          "username",
-          "email",
-          "passwordHash",
-          "avatarUrl",
-          "description",
-          "createTime"
-        ]
-      },
-      "Message": {
+      "MessageVo": {
         "type": "object",
         "properties": {
           "id": {
@@ -610,7 +638,7 @@
             "description": "消息所属聊天室",
             "allOf": [
               {
-                "$ref": "#/components/schemas/Chatroom"
+                "$ref": "#/components/schemas/ChatroomVo"
               }
             ]
           },
@@ -618,7 +646,7 @@
             "description": "消息由谁发出",
             "allOf": [
               {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/UserVo"
               }
             ]
           },
@@ -642,17 +670,9 @@
           "createTime"
         ]
       },
-      "ChatroomSummary": {
+      "ChatroomSummaryVo": {
         "type": "object",
         "properties": {
-          "latestMessage": {
-            "description": "当前聊天室的最新一条消息",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Message"
-              }
-            ]
-          },
           "latestVisitTime": {
             "type": "string",
             "example": "2024-03-23 19:12",
@@ -693,18 +713,26 @@
             "description": "当前summary记录所对应的chatroom",
             "allOf": [
               {
-                "$ref": "#/components/schemas/Chatroom"
+                "$ref": "#/components/schemas/ChatroomVo"
+              }
+            ]
+          },
+          "latestMessage": {
+            "description": "当前聊天室的最新一条消息",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MessageVo"
               }
             ]
           }
         },
         "required": [
-          "latestMessage",
           "latestVisitTime",
           "joinTime",
           "unreadMessageCount",
           "onlineUserIds",
-          "chatroom"
+          "chatroom",
+          "latestMessage"
         ]
       },
       "GetChatroomSummariesDto": {
