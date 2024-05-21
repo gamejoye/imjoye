@@ -239,6 +239,18 @@ export interface components {
       /** @description 当前聊天室的最新一条消息 */
       latestMessage: components["schemas"]["MessageVo"];
     };
+    GetChatroomSummaryDto: {
+      /**
+       * @description 聊天室id
+       * @example 11234889
+       */
+      id: number;
+      /**
+       * @description 最后一次用户访问当前聊天室的时间
+       * @example 2024-03-23 19:12
+       */
+      latestVisitTime: string;
+    };
     GetChatroomSummariesDto: {
       /**
        * @description 最后一次用户访问各个聊天室的信息
@@ -253,7 +265,7 @@ export interface components {
        *   }
        * ]
        */
-      latestVisitTimes: string[];
+      latestVisitTimes: components["schemas"]["GetChatroomSummaryDto"][];
     };
     IAddMessageChatroomDto: {
       /** @description 待添加消息所属聊天室id */

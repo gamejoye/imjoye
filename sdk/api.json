@@ -994,6 +994,25 @@
           "latestMessage"
         ]
       },
+      "GetChatroomSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 11234889,
+            "description": "聊天室id"
+          },
+          "latestVisitTime": {
+            "type": "string",
+            "example": "2024-03-23 19:12",
+            "description": "最后一次用户访问当前聊天室的时间"
+          }
+        },
+        "required": [
+          "id",
+          "latestVisitTime"
+        ]
+      },
       "GetChatroomSummariesDto": {
         "type": "object",
         "properties": {
@@ -1011,7 +1030,7 @@
             "description": "最后一次用户访问各个聊天室的信息",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/GetChatroomSummaryDto"
             }
           }
         },
