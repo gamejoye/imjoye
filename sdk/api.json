@@ -741,9 +741,10 @@
           "status": {
             "type": "string",
             "description": "好友请求状态",
-            "examples": [
-              "ACCEPT",
+            "example": "PENDING",
+            "enum": [
               "PENDING",
+              "ACCEPT",
               "REJECT"
             ]
           },
@@ -854,7 +855,11 @@
           "type": {
             "type": "string",
             "example": "SINGLE",
-            "description": "聊天室类型(单聊、多聊)"
+            "description": "聊天室类型(单聊、多聊)",
+            "enum": [
+              "SINGLE",
+              "MULTIPLE"
+            ]
           },
           "name": {
             "type": "string",

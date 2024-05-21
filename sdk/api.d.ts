@@ -101,8 +101,12 @@ export interface components {
     FriendInfoVo: {
       /** @description 好友的基本信息 */
       user: components["schemas"]["UserVo"];
-      /** @description 好友请求状态 */
-      status: string;
+      /**
+       * @description 好友请求状态
+       * @example PENDING
+       * @enum {string}
+       */
+      status: "PENDING" | "ACCEPT" | "REJECT";
       /**
        * @description 好友请求创建的时间
        * @example 2024-05-20 19:12
@@ -164,8 +168,9 @@ export interface components {
       /**
        * @description 聊天室类型(单聊、多聊)
        * @example SINGLE
+       * @enum {string}
        */
-      type: string;
+      type: "SINGLE" | "MULTIPLE";
       /**
        * @description 聊天室名字
        * @example chatroomName
