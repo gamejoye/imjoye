@@ -970,7 +970,7 @@
             "description": "当前聊天室在线用户的id数组",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "number"
             }
           },
           "chatroom": {

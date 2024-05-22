@@ -238,7 +238,7 @@ export interface components {
        *   712
        * ]
        */
-      onlineUserIds: string[];
+      onlineUserIds: number[];
       /** @description 当前summary记录所对应的chatroom */
       chatroom: components["schemas"]["ChatroomVo"];
       /** @description 当前聊天室的最新一条消息 */
