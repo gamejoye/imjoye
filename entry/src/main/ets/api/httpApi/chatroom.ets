@@ -1,16 +1,10 @@
 import http from '@ohos.net.http'
-import { IChatChannel } from '../../common/types/ChatChannel.type'
-import { IChatroom } from '../../common/types/Chatroom.type'
-import { IResponse } from '../../common/types/Response.type'
 import HttpHelper from './HttpHelper'
-
-type FetchChatroomSummariesParams = {
-  latestVisitTimes: Array<{ id: number, latestVisitTime: string }>;
-}
+import { paths } from '../../../../../../sdk/api'
 
 export async function fetchChatroomSummaries(
-    params: FetchChatroomSummariesParams
-): Promise<IResponse<Array<IChatChannel>>> {
+  body: paths['/chatrooms/summaries']['post']['requestBody']['content']['application/json'],
+): Promise<paths['/chatrooms/summaries']['post']['responses']['200']['content']['application/json']> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
   const response = await HttpHelper.request(`${apiUrl.get()}chatrooms/summaries`, {
     method: http.RequestMethod.POST,
@@ -19,42 +13,34 @@ export async function fetchChatroomSummaries(
       expectDataType: http.HttpDataType.STRING,
     },
     // 当使用POST请求时此字段用于传递内容
-    extraData: params
+    extraData: body
   });
   return JSON.parse(response.result as string);
 }
 
-type FetchChatroomByFriendIdParams = {
- friendId: number
-}
-
 export async function fetchChatroomByFriendId(
-  params: FetchChatroomByFriendIdParams,
-): Promise<IResponse<IChatroom>> {
+  query: paths['/chatrooms']['get']['parameters']['query'],
+): Promise<paths['/chatrooms']['get']['responses']['200']['content']['application/json']> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
-  const response = await HttpHelper.request(`${apiUrl.get()}chatrooms?friend_id=${params.friendId}`, {
+  const response = await HttpHelper.request(`${apiUrl.get()}chatrooms?friend_id=${query.friend_id}`, {
     method: http.RequestMethod.GET,
     header: {
       'Content-Type': 'application/json',
       expectDataType: http.HttpDataType.STRING,
     },
-    extraData: params
   });
   return JSON.parse(response.result as string);
 }
 
-type FetchChatroomSummaryParams = {
-  id: number,
-  timestamp: string,
-}
-
 export async function fetchChatroomSummary(
-    params: FetchChatroomSummaryParams
-): Promise<IResponse<IChatChannel>> {
+  path: paths['/chatrooms/summaries/{chatroomId}']['get']['parameters']['path'],
+  query: paths['/chatrooms/summaries/{chatroomId}']['get']['parameters']['query'],
+): Promise<paths['/chatrooms/summaries/{chatroomId}']['get']['responses']['200']['content']['application/json']> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
-  const { id, timestamp } = params;
+  const timestamp= query.timestamp;
+  const chatroomId = path.chatroomId;
   const encodedTimestamp = encodeURIComponent(timestamp);
-  const response = await HttpHelper.request(`${apiUrl.get()}chatrooms/summaries/${id}?timestamp=${encodedTimestamp}`, {
+  const response = await HttpHelper.request(`${apiUrl.get()}chatrooms/summaries/${chatroomId}?timestamp=${encodedTimestamp}`, {
     method: http.RequestMethod.GET,
     header: {
       'Content-Type': 'application/json',

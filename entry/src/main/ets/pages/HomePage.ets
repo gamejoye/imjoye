@@ -62,10 +62,10 @@ struct HomePage {
       eventId: EmitterEvent.CLIENT_CHATROOM_UPDATE,
     }, async ({ data }: { data: IEmitterMessage }) => {
       const payload: IClientChatroomUpdate = JSON.parse(data.plainText);
-      const { statusCode, data: channel, message } = await fetchChatroomSummary({
-        id: payload.id,
-        timestamp: payload.timestamp
-      });
+      const { statusCode, data: channel, message } = await fetchChatroomSummary(
+        { chatroomId: payload.id },
+        { timestamp: payload.timestamp }
+      );
       if(!isSuccess(statusCode)) {
         promptAction.showToast({
           message,
@@ -119,7 +119,9 @@ struct HomePage {
   }
 
   async loadFriends() {
-    const { statusCode, data: friends, message } = await fetchFriends(this.user.id);
+    const { statusCode, data: friends, message } = await fetchFriends({
+      id: this.user.id,
+    });
     if (!isSuccess(statusCode)) {
       promptAction.showToast({
         message,

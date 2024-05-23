@@ -30,7 +30,7 @@ struct Login {
     const { id, token } = loginRes.data;
     await UserInfoPreferenceUtil.storeUserInfo(getContext(), { [AUTHENTICATION_TOKEN]: token, [USER_ID]: id });
 
-    const fetchRes = await fetchUser(id);
+    const fetchRes = await fetchUser({ id });
     if (!isSuccess(fetchRes.statusCode)) {
       promptAction.showToast({
         message: fetchRes.message,

@@ -1,17 +1,13 @@
 import http from '@ohos.net.http'
-import { IMessage } from '../../common/types/Message.type'
-import { IResponse } from '../../common/types/Response.type'
 import HttpHelper from './HttpHelper'
+import { paths } from '../../../../../../sdk/api'
 
-type FetchMessagesParams = {
-  roomId: number;
-}
 export async function fetchMessages(
-    params: FetchMessagesParams,
-): Promise<IResponse<Array<IMessage>>> {
-  const { roomId } = params;
+    query: paths['/messages']['get']['parameters']['query'],
+): Promise<paths['/messages']['get']['responses']['200']['content']['application/json']> {
+  const { room_id } = query;
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
-  const response = await HttpHelper.request(apiUrl.get() + 'messages?room_id=' + roomId, {
+  const response = await HttpHelper.request(apiUrl.get() + 'messages?room_id=' + room_id, {
     method: http.RequestMethod.GET,
     header: {
       'Content-Type': 'application/json',
@@ -21,35 +17,17 @@ export async function fetchMessages(
   return JSON.parse(response.result as string);
 }
 
-type CreateMessageParams = {
-  temporaryId: number;
-  content: string;
-  userId: number;
-  chatroomId: number;
-}
-
 export async function createMessage(
-    params: CreateMessageParams
-): Promise<IResponse<IMessage>> {
-  const httpRequest = http.createHttp();
+    body: paths['/messages']['post']['requestBody']['content']['application/json']
+): Promise<paths['/messages']['post']['responses']['201']['content']['application/json']> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
-  const response = await httpRequest.request(apiUrl.get() + 'messages', {
+  const response = await HttpHelper.request(apiUrl.get() + 'messages', {
     method: http.RequestMethod.POST,
     header: {
       'Content-Type': 'application/json',
       expectDataType: http.HttpDataType.STRING,
     },
-    extraData: {
-      temporaryId: params.temporaryId,
-      content: params.content,
-      from: {
-        id: params.userId,
-      },
-      chatroom: {
-        id: params.chatroomId,
-      },
-    }
+    extraData: body
   });
-  httpRequest.destroy();
   return JSON.parse(response.result as string);
 }

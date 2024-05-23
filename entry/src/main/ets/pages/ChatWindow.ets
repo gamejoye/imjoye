@@ -57,7 +57,7 @@ struct ChatWindow {
   }
 
   async onPageShow() {
-    const { statusCode, data: messages, message } = await fetchMessages({ roomId: this.chatroom.id });
+    const { statusCode, data: messages, message } = await fetchMessages({ room_id: this.chatroom.id });
     if(!isSuccess(statusCode)) {
       promptAction.showToast({
         message,
@@ -131,8 +131,12 @@ struct ChatWindow {
     createMessage({
       temporaryId,
       content: partialMessage.content,
-      userId: partialMessage.from.id,
-      chatroomId: partialMessage.chatroom.id,
+      from: {
+        id: partialMessage.from.id
+      },
+      chatroom: {
+        id: partialMessage.chatroom.id,
+      }
     });
   }
 

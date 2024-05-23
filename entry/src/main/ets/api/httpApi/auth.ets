@@ -1,20 +1,10 @@
 import http from '@ohos.net.http'
-import { IResponse } from '../../common/types/Response.type'
 import HttpHelper from './HttpHelper'
-
-type LoginRequestBody = {
-  email: string;
-  password: string;
-}
-
-type LoginResponse = {
-  id: number;
-  token: string;
-}
+import { paths } from '../../../../../../sdk/api'
 
 export async function login(
-    body: LoginRequestBody
-): Promise<IResponse<LoginResponse>> {
+    body: paths['/auth/login']['post']['requestBody']['content']['application/json']
+): Promise<paths['/auth/login']['post']['responses']['201']['content']['application/json']> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
   const response = await HttpHelper.request(apiUrl.get() + 'auth/login', {
     method: http.RequestMethod.POST,
@@ -28,16 +18,9 @@ export async function login(
   return JSON.parse(response.result as string);
 }
 
-type RegisterRequestBody = {
-  username: string;
-  email: string;
-  password: string;
-  avatarUrl: string;
-}
-
 export async function register(
-  body: RegisterRequestBody
-): Promise<IResponse<void>> {
+  body: paths['/auth/register']['post']['requestBody']['content']['application/json']
+): Promise<paths['/auth/register']['post']['responses']['201']['content']['application/json']> {
   const apiUrl: SubscribedAbstractProperty<string> = AppStorage.Prop('apiUrl');
   const response = await HttpHelper.request(apiUrl.get() + 'auth/register', {
     method: http.RequestMethod.POST,

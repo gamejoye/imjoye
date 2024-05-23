@@ -32,7 +32,9 @@ struct LoadingPage {
       return;
     }
 
-    const { statusCode, data: user } = await fetchUser(userId);
+    const { statusCode, data: user } = await fetchUser({
+      id: userId,
+    });
     if(isSuccess(statusCode)) {
       AppStorage.SetOrCreate<IUser>(USER, user);
       router.replaceUrl({

@@ -17,7 +17,10 @@ struct FriendInfoDetail {
 
   async aboutToAppear() {
     this.friendInfoStatus = 'loading';
-    const { statusCode, data: friendInfo, message } = await fetchFriendInfo(this.user.id, this.friendId);
+    const { statusCode, data: friendInfo, message } = await fetchFriendInfo({
+      id: this.user.id,
+      friendId: this.friendId,
+    });
     if(!isSuccess(statusCode)) {
       promptAction.showToast({
         message,
@@ -32,7 +35,7 @@ struct FriendInfoDetail {
 
   async handleOnJumpToChatWindow() {
     const { statusCode, data: chatroom, message } = await fetchChatroomByFriendId({
-      friendId: this.friendId,
+      friend_id: this.friendId,
     });
     if(!isSuccess(statusCode)) {
       promptAction.showToast({
